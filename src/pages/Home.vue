@@ -73,11 +73,6 @@ export default {
                     </div>
                 </div>
                 </div>
-                <img 
-    v-if="images.length > 0" 
-    :src="images[0].src" 
-    alt="Test Image" 
-    class="d-block w-100">
             </div>
         </section>
     </main>
