@@ -1,16 +1,16 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+  import Header from './components/Header.vue';
+  import Footer from './components/Footer.vue';
 </script>
 
 <template>
-  <div>
-    <h1>DRACARYSS</h1>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+  <Header></Header>
+  <main>
+    <router-view></router-view>
+  </main>
+  <Footer></Footer>
 </template>
 
-<style>
-  h1{
-    color: red;
-  }
+<style lang="scss">
+
 </style>

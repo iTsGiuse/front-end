@@ -1,0 +1,21 @@
+[
+    {
+      "title": "Fake News",
+      "src": "/front-end/images/fakenews.jpg",
+      "description": "Negli ultimi mesi, l'emergere di nuove tecnologie ha reso più facile che mai la diffusione di informazioni errate e fuorvianti. In risposta a questo fenomeno preoccupante, diverse organizzazioni hanno avviato iniziative mirate a sensibilizzare il pubblico sui pericoli delle fake news. Queste campagne educative puntano a fornire strumenti e risorse utili per aiutare gli utenti a identificare le fonti affidabili e a verificare le informazioni prima di condividerle. In un'epoca in cui le notizie viaggiano più velocemente che mai, è fondamentale adottare un approccio critico e consapevole alle informazioni che consumiamo.",
+      "link": "fake-news"
+    },
+    {
+      "title": "Privacy",
+      "src": "/front-end/images/privacy.jpg",
+      "description": "Recentemente, un'indagine ha svelato l'esistenza di una vasta rete dedicata alla diffusione di notizie false, con l'obiettivo di manipolare l'opinione pubblica su questioni chiave. Questi risultati hanno sollevato serie preoccupazioni riguardo alla sicurezza delle informazioni e alla vulnerabilità della società moderna di fronte a campagne di disinformazione. Gli esperti avvertono che la proliferazione di notizie false non solo distorce la realtà, ma può anche influenzare le decisioni politiche e sociali. È quindi cruciale sviluppare un senso critico tra gli utenti e promuovere pratiche di consumo responsabile delle notizie.",
+      "link": "privacy-news"
+    },
+    {
+      "title": "Security",
+      "src": "/front-end/images/security.jpg",
+      "description": "Il recente rapporto sulla sicurezza informatica mette in luce le minacce sempre più sofisticate a cui sono esposti i dati personali degli utenti nel mondo digitale. Con l'aumento del lavoro remoto e della digitalizzazione dei servizi, i rischi legati alla privacy sono diventati una preoccupazione centrale per individui e aziende. Il rapporto offre un'analisi dettagliata delle vulnerabilità attuali e propone misure preventive per proteggere le informazioni sensibili. Gli esperti sottolineano l'importanza di adottare pratiche di sicurezza come l'autenticazione a due fattori e l'uso di password robuste, nonché di rimanere informati sulle nuove minacce emergenti nel panorama della sicurezza informatica.",
+      "link": "security-news"
+    }
+]
+
