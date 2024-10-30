@@ -1,87 +1,36 @@
 <script>
-    export default{
-        name: 'Eventi',
-    }
+import events from '../../events';
+
+export default {
+    data() {
+        console.log(events);
+        return {
+            events,
+        };
+    },
+};
 </script>
 
 <template>
     <section id="eventi">
-        <div class="container">
-            <div class="row">
-                <div class="col my-5">
-                    <h2>Eventi</h2>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-4 my-5">
-                    <div class="card h-100">
-                        <img src="#" class="card-img-top" alt="Locandina Halloween">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">Halloween Party</h5>
-                            <p class="card-text flex-grow-1">🎃 HALLOWEEN PARTY 🎃
-                                👻Giovedì 31 Ottobre👻
-
-                                💀 Festa privata in maschera 💀
-                                🍻 Open Bar e giochi alcolici 🍻
-                                🎵 Musica tech house, pop, latin 🎵
-
-                                Vi aspettiamo dalle ore 22:00 presso polisportiva Meletole, Castelnovo di Sotto (RE).
-
-                                (NON c’è l’obbligo di travestimento)
-                                Per prezzi e omaggi contattateci in DM 👻
-                            </p>
-                            <a href="https://www.instagram.com/p/DA8tt0Fsx6n/" class="btn btn-primary">Scopri info</a>
+        <div class="container my-5">
+            <div class="d-flex justify-content-center flex-wrap">
+                <div v-for="evento in events" :key="evento.key" class="flip-card m-3">
+                    <div class="flip-card-inner">
+                        <!-- Fronte della Card - Mostra Immagine -->
+                        <div class="flip-card-front card">
+                            <img :src="evento.src" class="card-img-top" :alt="evento.title" />
                         </div>
-                    </div>
-                </div>
-                <div class="col-4 my-5">
-                    <div class="card h-100">
-                        <img src="#" class="card-img-top" alt="Locandina Carnevale">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">Carnevale Party</h5>
-                            <p class="card-text flex-grow-1">DRACARYS🔥 presenta:
-                                🎭 CARNIVAL PARTY 🎭
-                                📆 Sabato 17 febbraio
-                                🕘 Dalle 22:00
+                        <!-- Retro della Card - Mostra Dettagli Evento -->
+                        <div class="flip-card-back card-body">
+                            <h3 class="card-title">{{ evento.title }}</h3><br>
+                            <p class="card-text">{{ evento.description }}</p><br>
+                            <p class="card-text"><strong>Data:</strong> {{ evento.date }}</p>
 
-                                🤵🏼‍♂️ dress code a tema
-
-                                Intrattenimento:
-                                🎧 Dj set e karaoke
-                                🎵musica pop e techouse
-                                💃🏽 sfilata ed elezione dei migliori costumi
-                                💸 in palio un MONTEPREMI da 100€ da dividere per i primi tre posti
-
-                                🍸 1 free drink + 1 analcolico
-
-                                🔞 Ingresso over 18
-                                🧥Guardaroba gratuito
-                                📸 fotografo
-                            </p>
-                            <a href="https://www.instagram.com/p/C2p1mI1Mu82/" class="btn btn-primary">Scopri info</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-4 my-5">
-                    <div class="card h-100">
-                        <img src="#" class="card-img-top" alt="Locandina Capodanno">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">Happy New Yaar</h5>
-                            <p class="card-text flex-grow-1">🎊 CAPODANNO 2024 🎊
-                                📆 Domenica 31 dicembre
-                                🕘 Dalle 21:00
-                                🪩 Ospita DRACARYS🔥
-                                🔞 Ingresso over 18
-
-                                Il nostro servizio offre a tutti:
-                                🎧 Dj set
-                                🥂 magnum per il brindisi
-                                🎂 pandoro e panettone
-                                📸 fotografo
-
-                                🤵🏼‍♂️ è richiesto un dress code elegante.
-                            </p>
-                            <a href="https://www.instagram.com/p/C09R5F9s6EN/" class="btn btn-primary">Scopri info</a>
+                            <ul>
+                                <li v-for="service in evento.services" :key="service">{{ service }}</li>
+                            </ul>
+                            <router-link class="btn btn-danger" :to="{ name: 'evento', params: { eventoLink: evento.link } }">Scopri info</router-link>
                         </div>
                     </div>
                 </div>
@@ -89,7 +38,60 @@
         </div>
     </section>
 </template>
+  
+  <style scoped lang="scss">
+    #eventi{
 
-<style lang="scss" scoped>
+        .flip-card {
+            width: 400px;
+            height: 500px;
+            perspective: 1000px;
+        }
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .flip-card-front {
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #ddd;
+        }
+        .flip-card-back {
+            background-color: #f8f9fa;
+            color: #333;
+            padding: 20px;
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #ddd;
 
-</style>
+            p{
+                font-weight: bold;
+            }
+        }
+        .card-img-top {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+  </style>
