@@ -1,87 +1,93 @@
 <script>
-import newsData from '../assets/news.json';
+    import news from '../../news.js';
+    import Jumbotron from '../components/Jumbotron.vue';
 
-export default {
-    name: 'Home',
-    data() {
-        return {
-            currentSlide: 0,
-            images: newsData
-        };
-    },
-    created() {
-        console.log(this.images); 
-        this.images.forEach(image => console.log(image.src)); 
-    },
-    methods: {
-        nextSlide() {
-            this.currentSlide = (this.currentSlide + 1) % this.images.length;
+    export default {
+        name: 'Home',
+        components: {
+            Jumbotron
         },
-        prevSlide() {
-            this.currentSlide = (this.currentSlide - 1 + this.images.length) % this.images.length;
+        data() {
+            return {
+                newsItems: news
+            };
         }
-    }
-}
+    };
 </script>
-
 <template>
-    <main>
-        <section class="news">
-            <div class="container">
-                <div class="row ">
-                <div class="col my-5">
-                    <h1>News</h1>
-                </div>
-                </div>
-                <div class="row">
-                <div class="col my-5">
-                    <div id="carouselExampleIndicators" class="text-center carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-indicators">
-                        <button 
-                            v-for="(image, index) in images" 
-                            :key="index" 
-                            type="button" 
-                            :data-bs-target="'#carouselExampleIndicators'" 
-                            :data-bs-slide-to="index" 
-                            :class="{ active: currentSlide === index }" 
-                            :aria-label="'Slide ' + (index + 1)">
-                        </button>
-                    </div>
-                    <h5>{{ images[currentSlide].title }}</h5>
-                    <div class="carousel-inner">
-                        <div 
-                            class="carousel-item" 
-                            v-for="(image, index) in images" 
-                            :key="index" 
-                            :class="{ active: currentSlide === index }">
-                        <router-link :to="`/news/${image.link}`">
-                            <img 
-                                :src="image.src" 
-                                class="d-block w-100 fixed-size" 
-                                :alt="image.title">
-                        </router-link>
-                        </div>
-                    </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev" @click="prevSlide">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next" @click="nextSlide">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
-                    </div>
-                </div>
+
+    <Jumbotron></Jumbotron>
+
+    <section class="news">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 mt-5 mb-3">
+                    <h3>News</h3>
                 </div>
             </div>
-        </section>
-    </main>
+            <div class="row">
+                <div class="col-12">
+                    <div id="news-carosello" class="carousel slide carousel-small">
+                        <div class="carousel-indicators">
+                            <button v-for="(item, index) in newsItems" :key="'indicator-' + item.key" type="button" data-bs-target="#news-carosello" :data-bs-slide-to="index" :class="{ active: index === 0 }" :aria-current="index === 0 ? 'true' : undefined" :aria-label="'Slide ' + (index + 1)"></button>
+                        </div>
+                        <div class="carousel-inner">
+                            <div v-for="(item, index) in newsItems" :key="'carousel-item-' + item.key" :class="['carousel-item', { active: index === 0 }]">
+                                <router-link :to="{ name: 'news', params: { newsLink: item.link } }">
+                                    <div class="carousel-caption-top">
+                                        <h5>{{ item.title }}</h5>
+                                    </div>
+                                    <img :src="item.src" class="d-block w-100" :alt="item.title">
+                                </router-link>
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#news-carosello" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#news-carosello" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="">
+
+    </section>
 </template>
-  
-  <style lang="scss" scoped>
-    .fixed-size {
-      width: 300px; 
-      height: 200px; 
-      object-fit: cover;
+
+<style scoped lang="scss">
+    
+    .carousel-small {
+        width: 100%;
+        height: 100%;
+        margin-bottom: 20px;
+
+        .carousel-item, img {
+            height: 300px; /* Limita altezza dell'immagine */
+            object-fit: cover; /* Copertura dell'immagine */
+        }
     }
-  </style>
+
+
+
+    .carousel-caption-top {
+        position: absolute;
+        top: 10px; /* Posiziona il titolo in alto */
+        left: 50%;
+        transform: translateX(-50%);
+        color: white;
+        font-weight: bold;
+        background: rgba(0, 0, 0, 0.5); /* Sfondo per contrasto */
+        padding: 5px 10px;
+        border-radius: 5px;
+        text-align: center;
+    }
+
+    .carousel-indicators {
+        bottom: -20px; /* Sposta indicatori più in basso */
+    }
+</style>

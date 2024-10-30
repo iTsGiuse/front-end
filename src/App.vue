@@ -12,5 +12,9 @@
 </template>
 
 <style lang="scss">
-
+  *{
+    font-family: "Cinzel", serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+  }
 </style>

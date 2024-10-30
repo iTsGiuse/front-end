@@ -5,13 +5,23 @@
 </script>
 
 <template>
-    <footer class="py-4">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-12 col-md-6 text-center text-md-start mb-3 mb-md-0">
-                    <h3>Dracarys™</h3>
+
+    <footer>
+        <div class="container py-3">
+            <div class="row">
+                <div class="col-12 d-flex justify-content-center">
+                    <div class="logo">
+                        <img src="../assets/images/Logo/Logo.jpg" alt="Logo">
+                    </div>
                 </div>
-                <div class="col-12 col-md-6 d-flex justify-content-center justify-content-md-end">
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <h4>Dracarys™</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 d-flex justify-content-center">
                     <div class="me-3">
                         <a href="https://www.instagram.com/dracarys_staff?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==">
                             <i class="fa-brands fa-instagram fa-2x"></i>
@@ -37,9 +47,24 @@
     footer{
         background-color: #941110;
         color: white;
+        text-align: center !important;
+        
+        .logo{
+            width: 100px;
+
+            img{
+                width: 100%;
+                height: 100%;
+            }
+        }
 
         a{
             color: white;
+
+            i{
+                font-size: 30px;
+            }
         }
     }
+
 </style>
