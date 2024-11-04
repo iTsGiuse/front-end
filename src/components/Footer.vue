@@ -23,13 +23,13 @@
             <div class="row">
                 <div class="col-12 d-flex justify-content-center">
                     <div class="me-3">
-                        <a href="https://www.instagram.com/dracarys_staff?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==">
-                            <i class="fa-brands fa-instagram fa-2x"></i>
+                        <a href="https://www.tiktok.com/@dracarys545">
+                            <i class="fa-brands fa-tiktok fa-2x"></i>
                         </a>
                     </div>
                     <div class="me-3">
-                        <a href="https://www.tiktok.com/@dracarys545">
-                            <i class="fa-brands fa-tiktok fa-2x"></i>
+                        <a href="https://www.instagram.com/dracarys_staff?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==">
+                            <i class="fa-brands fa-instagram fa-2x"></i>
                         </a>
                     </div>
                     <div>

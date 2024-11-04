@@ -5,6 +5,8 @@ import Home from './pages/Home.vue';
 import Eventi from './pages/Eventi.vue';
 import Classifica from './pages/Classifica.vue';
 import ChiSiamo from './pages/ChiSiamo.vue';
+import Contattaci from './pages/Contattaci.vue';
+import Faq from './pages/Faq.vue';
 import NewsDettaglio from './pages/NewsDettaglio.vue';
 import EventoDettaglio from "./pages/EventoDettaglio.vue";
 
@@ -40,6 +42,16 @@ const router = createRouter({
             path: '/chi-siamo', 
             name: 'chi-siamo',
             component: ChiSiamo
+        },
+        {
+            path: '/contattaci', 
+            name: 'contattaci',
+            component: Contattaci
+        },
+        {
+            path: '/faq', 
+            name: 'faq',
+            component: Faq
         },
         {
             path: '/:catchAll(.*)', 

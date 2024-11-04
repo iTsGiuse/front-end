@@ -29,6 +29,12 @@
                             <li class="nav-item">
                                 <router-link class="nav-link" active-class="active" to="/chi-siamo">Chi Siamo</router-link>
                             </li>
+                            <li class="nav-item">
+                                <router-link class="nav-link" active-class="active" to="/contattaci">Contattaci</router-link>
+                            </li>
+                            <li class="nav-item">
+                                <router-link class="nav-link" active-class="active" to="/faq">FAQ</router-link>
+                            </li>
                         </ul>
                     </div>
                     <div class="ms-auto">
@@ -65,7 +71,7 @@
             margin: 0;
 
             li {
-                margin: 0 15px; /* Spaziatura più ampia tra i link */
+                margin: 0 15px;
                 transition: color 0.3s;
 
                 .nav-link {
@@ -74,27 +80,26 @@
                     display: block;
                     padding: 10px 15px;
                     border-radius: 5px;
-                    position: relative; /* Aggiunto per gestire la barretta */
+                    position: relative; 
 
-                    /* Stile per la barretta sotto il link attivo */
                     &::after {
                         content: '';
                         display: block;
                         width: 0;
                         height: 5px;
-                        background: black; /* Colore della barretta */
+                        background: black; 
                         transition: width 0.3s;
                         position: absolute;
-                        bottom: -75%; /* Posizione della barretta */
+                        bottom: -75%; 
                         left: 0;
                     }
 
                     &.active::after {
-                        width: 100%; /* Estendi la barretta per il link attivo */
+                        width: 100%; 
                     }
 
                     &:hover {
-                        color: #ccc; /* Colore di hover */
+                        color: #ccc; 
                         cursor: pointer;
                     }
                 }

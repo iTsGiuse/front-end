@@ -17,7 +17,8 @@ const events = [
         dressCode:'elegante',
         services: ['guardaroba', 'dj', 'karaoke', 'fotografo', 'panettone e pandoro', 'brindisi'],
         location: 'Club DRACARYS',
-        tags: ["capodanno", "party", "feste 2024", "club", "evento speciale"]
+        tags: ["capodanno", "party", "feste 2024", "club", "evento speciale"],
+        stato: ''
     },
     {
         title: "Festa di Carnevale",
@@ -41,6 +42,21 @@ const events = [
         description: "Una serata spettrale piena di divertimento con DJ set, drink a tema e premi per i migliori costumi! Non perdere il party più terrificante dell'anno!",
         key: 3,
         date: '2024-10-31',
+        dateStart: '22.00',
+        dateEnd: '3.00',
+        età:'+18',
+        dressCode:'costume',
+        services: ['giochi', 'drink a tema', 'premi costumi'],
+        location: 'Club Spooky',
+        tags: ["halloween", "party", "feste ottobre", "costumi", "club"]
+    },
+    {
+        title: "Halloween Party",
+        src: locandinaHalloween,
+        link: "halloween-party",
+        description: "Una serata spettrale piena di divertimento con DJ set, drink a tema e premi per i migliori costumi! Non perdere il party più terrificante dell'anno!",
+        key: 4,
+        date: '2024-11-31',
         dateStart: '22.00',
         dateEnd: '3.00',
         età:'+18',

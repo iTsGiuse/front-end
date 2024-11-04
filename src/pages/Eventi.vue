@@ -1,36 +1,66 @@
 <script>
-import events from '../../events';
+    import events from '../../events';
 
-export default {
-    data() {
-        console.log(events);
-        return {
-            events,
-        };
-    },
-};
+    export default {
+        data() {
+            return {
+                events,
+            };
+        },
+        methods: {
+            checkEventStatus(eventDate) {
+                const today = new Date();
+                const event = new Date(eventDate);
+                const timeDiff = event - today;
+                const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+                // La card è disabilitata se mancano 30 giorni o meno all'evento
+                const isDisabled = daysDiff < 0 || daysDiff <= 30; 
+
+                return {
+                    isDisabled, // true se l'evento è passato o mancano 30 giorni
+                    daysUntilUnlock: daysDiff > 0 ? daysDiff : 0 // Restituisce 0 se l'evento è passato
+                };
+            }
+        },
+        computed: {
+            sortedEvents() {
+                return this.events.sort((a, b) => b.key - a.key); 
+            }
+        },
+    };
 </script>
 
 <template>
     <section id="eventi">
         <div class="container my-5">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h2>Eventi:</h2>
+                </div>
+            </div>
             <div class="d-flex justify-content-center flex-wrap">
-                <div v-for="evento in events" :key="evento.key" class="flip-card m-3">
+                <div v-for="evento in sortedEvents" :key="evento.key" class="flip-card m-3" :class="{ 'disabled-card': checkEventStatus(evento.date).isDisabled }">
                     <div class="flip-card-inner">
                         <!-- Fronte della Card - Mostra Immagine -->
                         <div class="flip-card-front card">
                             <img :src="evento.src" class="card-img-top" :alt="evento.title" />
+                            <div v-if="checkEventStatus(evento.date).isDisabled" class="overlay">
+                                <i class="fas fa-hourglass-half"></i>
+                                <p class="countdown" v-if="checkEventStatus(evento.date).daysUntilUnlock > 0">
+                                    {{ checkEventStatus(evento.date).daysUntilUnlock }} giorni rimanenti
+                                </p>
+                            </div>    
                         </div>
                         <!-- Retro della Card - Mostra Dettagli Evento -->
                         <div class="flip-card-back card-body">
                             <h3 class="card-title">{{ evento.title }}</h3><br>
                             <p class="card-text">{{ evento.description }}</p><br>
                             <p class="card-text"><strong>Data:</strong> {{ evento.date }}</p>
-
                             <ul>
                                 <li v-for="service in evento.services" :key="service">{{ service }}</li>
                             </ul>
-                            <router-link class="btn btn-danger" :to="{ name: 'evento', params: { eventoLink: evento.link } }">Scopri info</router-link>
+                            <router-link v-if="!checkEventStatus(evento.date).isDisabled" class="btn btn-danger" :to="{ name: 'evento', params: { eventoLink: evento.link } }">Scopri info</router-link>
                         </div>
                     </div>
                 </div>
@@ -41,6 +71,38 @@ export default {
   
   <style scoped lang="scss">
     #eventi{
+
+        //INIZIO OSCURAMENTO CARD//
+        .disabled-card {
+            opacity: 0.3; 
+            pointer-events: none; 
+            position: relative; 
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9); 
+            display: flex;
+            align-items: center;
+            justify-content: center; 
+            color: white; 
+            font-size: 2rem; 
+            z-index: 1; 
+        }
+
+        .countdown {
+            font-size: 1rem; 
+            margin-top: 10px; 
+        }
+
+        .flip-card-front {
+            position: relative; 
+        }
+        //FINE OSCURAMENTO CARD//
 
         .flip-card {
             width: 400px;
@@ -93,5 +155,6 @@ export default {
             height: 100%;
             object-fit: cover;
         }
+
     }
   </style>
