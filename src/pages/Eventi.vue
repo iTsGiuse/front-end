@@ -31,6 +31,11 @@ export default {
 <template>
     <section id="eventi">
         <div class="container my-5">
+            <div class="row">
+                <div class="col-12 text-center my-3 mb-4">
+                    <h2>Eventi:</h2>
+                </div>
+            </div>
             <div class="d-flex justify-content-center flex-wrap">
                 <div v-for="evento in sortedEvents" :key="evento.key" class="flip-card m-3" :class="{ 'disabled-card': checkEventStatus(evento.date).isDisabled }">
                     <div class="flip-card-inner">
