@@ -1,44 +1,36 @@
 <script>
-    import events from '../../events';
+import events from '../../events';
 
-    export default {
-        data() {
+export default {
+    data() {
+        return {
+            events,
+        };
+    },
+    methods: {
+        checkEventStatus(eventDate) {
+            const today = new Date();
+            const event = new Date(eventDate);
+            const daysDiff = Math.ceil((event - today) / (1000 * 60 * 60 * 24));
+            const isDisabled = daysDiff > 0 && daysDiff <= 30; 
+
             return {
-                events,
+                isDisabled,
+                daysUntilUnlock: daysDiff > 0 ? daysDiff : 0
             };
-        },
-        methods: {
-            checkEventStatus(eventDate) {
-                const today = new Date();
-                const event = new Date(eventDate);
-                const timeDiff = event - today;
-                const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-
-                // La card è disabilitata se mancano 30 giorni o meno all'evento
-                const isDisabled = daysDiff < 0 || daysDiff <= 30; 
-
-                return {
-                    isDisabled, // true se l'evento è passato o mancano 30 giorni
-                    daysUntilUnlock: daysDiff > 0 ? daysDiff : 0 // Restituisce 0 se l'evento è passato
-                };
-            }
-        },
-        computed: {
-            sortedEvents() {
-                return this.events.sort((a, b) => b.key - a.key); 
-            }
-        },
-    };
+        }
+    },
+    computed: {
+        sortedEvents() {
+            return this.events.sort((a, b) => b.key - a.key); 
+        }
+    },
+};
 </script>
 
 <template>
     <section id="eventi">
         <div class="container my-5">
-            <div class="row">
-                <div class="col-12 text-center">
-                    <h2>Eventi:</h2>
-                </div>
-            </div>
             <div class="d-flex justify-content-center flex-wrap">
                 <div v-for="evento in sortedEvents" :key="evento.key" class="flip-card m-3" :class="{ 'disabled-card': checkEventStatus(evento.date).isDisabled }">
                     <div class="flip-card-inner">
@@ -46,10 +38,10 @@
                         <div class="flip-card-front card">
                             <img :src="evento.src" class="card-img-top" :alt="evento.title" />
                             <div v-if="checkEventStatus(evento.date).isDisabled" class="overlay">
-                                <i class="fas fa-hourglass-half"></i>
-                                <p class="countdown" v-if="checkEventStatus(evento.date).daysUntilUnlock > 0">
-                                    {{ checkEventStatus(evento.date).daysUntilUnlock }} giorni rimanenti
-                                </p>
+                                <div class="text-center">
+                                    <i class="fas fa-hourglass-half"></i>
+                                    <p class="countdown" v-if="checkEventStatus(evento.date).daysUntilUnlock > 0">{{ checkEventStatus(evento.date).daysUntilUnlock }} giorni rimanenti</p>
+                                </div>
                             </div>    
                         </div>
                         <!-- Retro della Card - Mostra Dettagli Evento -->
@@ -68,93 +60,93 @@
         </div>
     </section>
 </template>
-  
-  <style scoped lang="scss">
-    #eventi{
 
-        //INIZIO OSCURAMENTO CARD//
-        .disabled-card {
-            opacity: 0.3; 
-            pointer-events: none; 
-            position: relative; 
-        }
-
-        .overlay {
-            position: absolute;
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.9); 
-            display: flex;
-            align-items: center;
-            justify-content: center; 
-            color: white; 
-            font-size: 2rem; 
-            z-index: 1; 
-        }
-
-        .countdown {
-            font-size: 1rem; 
-            margin-top: 10px; 
-        }
-
-        .flip-card-front {
-            position: relative; 
-        }
-        //FINE OSCURAMENTO CARD//
-
-        .flip-card {
-            width: 400px;
-            height: 500px;
-            perspective: 1000px;
-        }
-        .flip-card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            transition: transform 0.6s;
-            transform-style: preserve-3d;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        .flip-card:hover .flip-card-inner {
-            transform: rotateY(180deg);
-        }
-        .flip-card-front, .flip-card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        .flip-card-front {
-            background-color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid #ddd;
-        }
-        .flip-card-back {
-            background-color: #f8f9fa;
-            color: #333;
-            padding: 20px;
-            transform: rotateY(180deg);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border: 1px solid #ddd;
-
-            p{
-                font-weight: bold;
-            }
-        }
-        .card-img-top {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
+<style scoped lang="scss">
+#eventi {
+    // INIZIO OSCURAMENTO CARD //
+    .disabled-card {
+        opacity: 1; 
+        pointer-events: none; 
+        position: relative; 
     }
-  </style>
+
+    .overlay {
+        position: absolute;
+        top: 0; 
+        left: 0; 
+        width: 100%; 
+        height: 100%;
+        background-color: rgba(0, 0, 0, 12); 
+        display: flex;
+        align-items: center;
+        justify-content: center; 
+        color: white; 
+        font-size: 2rem; 
+        z-index: 1; 
+    }
+
+    .countdown {
+        display: block;
+        font-size: 1.4rem; 
+        margin-top: 10px; 
+        color: #941110; 
+    }
+
+    .flip-card-front {
+        position: relative; 
+    }
+    // FINE OSCURAMENTO CARD //
+
+    .flip-card {
+        width: 400px;
+        height: 500px;
+        perspective: 1000px;
+    }
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transition: transform 0.6s;
+        transform-style: preserve-3d;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    }
+    .flip-card-front, .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    .flip-card-front {
+        background-color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #ddd;
+    }
+    .flip-card-back {
+        background-color: #f8f9fa;
+        color: #333;
+        padding: 20px;
+        transform: rotateY(180deg);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid #ddd;
+
+        p {
+            font-weight: bold;
+        }
+    }
+    .card-img-top {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+</style>
