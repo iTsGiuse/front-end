@@ -51,21 +51,39 @@ const events = [
         tags: ["halloween", "party", "feste ottobre", "costumi", "club"]
     },
     {
-        title: "Halloween Party",
+        title: "Christmas Party",
         src: locandinaHalloween,
-        link: "halloween-party",
-        description: "Una serata spettrale piena di divertimento con DJ set, drink a tema e premi per i migliori costumi! Non perdere il party più terrificante dell'anno!",
+        link: "christmas-party",
+        description: "",
         key: 4,
-        date: '2024-11-30',
+        date: '2024-12-21',
         dateStart: '22.00',
         dateEnd: '3.00',
         età:'+18',
-        dressCode:'costume',
-        services: ['giochi', 'drink a tema', 'premi costumi'],
-        location: 'Club Spooky',
-        tags: ["halloween", "party", "feste ottobre", "costumi", "club"]
+        dressCode:'tema natalizio',
+        services: ['giochi', 'dj', 'guardaroba', 'karaoke', 'fotografo'],
+        gamesName: ['Beer Pong', 'Twister', 'Sei un drago' ],
+        dj: 'Naga',
+        fotografo: '',
+        pulizia: 'noi',
+        location: '',
+        tags: ["Christmas", "party", "feste dicembre", "costumi", "dj"]
     },
 
 ];
 
 export default events;
+
+/* 
+ordine:
+
+1 - POSTO 
+2 - LOCANDINA 
+3 - TROVARE FOTOGRAFO
+4 - Addobbi
+5 - LISTA MUSICA
+6 - LISTA GIOCHI
+7 - FARE LA SPESA
+8 - Allestire 
+9 - SPACCARE
+ */

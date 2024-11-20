@@ -12,7 +12,7 @@ export default {
             const today = new Date();
             const event = new Date(eventDate);
             const daysDiff = Math.ceil((event - today) / (1000 * 60 * 60 * 24));
-            const isDisabled = daysDiff > 0 && daysDiff <= 30; 
+            const isDisabled = daysDiff > 0 && daysDiff > 9; 
 
             return {
                 isDisabled,
@@ -32,8 +32,8 @@ export default {
     <section id="eventi">
         <div class="container my-5">
             <div class="row">
-                <div class="col-12 text-center my-3 mb-4">
-                    <h2>Eventi:</h2>
+                <div class="col-12 my-3 mb-4">
+                    <h2 class="ms-5">Eventi:</h2>
                 </div>
             </div>
             <div class="d-flex justify-content-center flex-wrap">
@@ -50,7 +50,7 @@ export default {
                             </div>    
                         </div>
                         <!-- Retro della Card - Mostra Dettagli Evento -->
-                        <div class="flip-card-back card-body">
+                        <div class="flip-card-back card-body text-center">
                             <h3 class="card-title">{{ evento.title }}</h3><br>
                             <p class="card-text">{{ evento.description }}</p><br>
                             <p class="card-text"><strong>Data:</strong> {{ evento.date }}</p>
@@ -103,8 +103,8 @@ export default {
     // FINE OSCURAMENTO CARD //
 
     .flip-card {
-        width: 400px;
-        height: 500px;
+        width: 380px;
+        height: 470px;
         perspective: 1000px;
     }
     .flip-card-inner {
