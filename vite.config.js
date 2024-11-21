@@ -20,37 +20,43 @@ export default defineConfig({
         "id": "/front-end/",
         "icons": [
                   {
-                    "src": "/front-end/assets/images/Logo/web-app-manifest-192x192.png",
+                    "src": "/front-end/assets/images/pwa/Logo-192x192.png",
                     "sizes": "192x192",
                     "type": "image/png",
                     "purpose": "any"
                   },
                   {
-                    "src": "/front-end/assets/images/Logo//web-app-manifest-512x512.png",
+                    "src": "/front-end/assets/images/pwa/Logo-512x512.png",
                     "sizes": "512x512",
                     "type": "image/png",
                     "purpose": "maskable"
                   }
                 ],
       "screenshots": [
-                  {
-                    "src": "/front-end/assets/images/Logo/screen1.png",
-                    "sizes": "1080x1920",
-                    "type": "image/png",
-                    "form_factor": "wide"
+                      {
+                        "src": "/front-end/assets/images/pwa/Screen-desktop.png",
+                        "sizes": "1280x720",
+                        "type": "image/png",
+                        "form_factor": "wide"
+                      },
+                      {
+                        "src": "/front-end/assets/images/pwa/Screen-mobile.png",
+                        "sizes": "720x1280",
+                        "type": "image/png",
+                        "form_factor": "narrow"
+                      }
+                    ]
                   },
-                ]
-      },
       workbox: {
         runtimeCaching: [
           {
-            urlPattern: /^https:\/\/.*\.(?:png|jpg|jpeg|svg|gif|css|js)$/, // Regole per le risorse
-            handler: 'CacheFirst', // Strategie di caching
+            urlPattern: /^https:\/\/.*\.(?:png|jpg|jpeg|svg|gif|css|js)$/, 
+            handler: 'CacheFirst', 
             options: {
               cacheName: 'images-and-assets',
               expiration: {
-                maxEntries: 50, // Numero massimo di file nella cache
-                maxAgeSeconds: 30 * 24 * 60 * 60, // Scadenza di 30 giorni
+                maxEntries: 50, 
+                maxAgeSeconds: 30 * 24 * 60 * 60, 
               },
             },
           },
