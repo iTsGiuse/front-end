@@ -32,6 +32,14 @@ export default defineConfig({
                     "purpose": "maskable"
                   }
                 ],
+      "screenshots": [
+                  {
+                    "src": "/front-end/assets/images/Logo/screen1.png",
+                    "sizes": "1080x1920",
+                    "type": "image/png",
+                    "form_factor": "wide"
+                  },
+                ]
       },
       workbox: {
         runtimeCaching: [
