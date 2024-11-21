@@ -19,19 +19,19 @@ export default defineConfig({
         "theme_color": "#4DBA87",
         "id": "/front-end/",
         "icons": [
-          {
-            "src": "/front-end/assets/images/Logo/Logo-192x192.png",
-            "sizes": "192x192",
-            "type": "image/png",
-            "purpose": "any"
-          },
-          {
-            "src": "/front-end/assets/images/Logo/Logo-512x512.png",
-            "sizes": "512x512",
-            "type": "image/png",
-            "purpose": "maskable"
-          }
-        ],
+                  {
+                    "src": "/front-end/assets/images/Logo/web-app-manifest-192x192.png",
+                    "sizes": "192x192",
+                    "type": "image/png",
+                    "purpose": "any"
+                  },
+                  {
+                    "src": "/front-end/assets/images/Logo//web-app-manifest-512x512.png",
+                    "sizes": "512x512",
+                    "type": "image/png",
+                    "purpose": "maskable"
+                  }
+                ],
       },
       workbox: {
         runtimeCaching: [
