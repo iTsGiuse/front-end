@@ -9,25 +9,28 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
-        name: 'Dracarys',
-        short_name: 'Dracarys',
-        start_url: '/front-end/',
-        display: 'standalone',
-        background_color: '#ffffff',
-        theme_color: '#4DBA87',
-        icons: [
+        "name": "Dracarys",
+        "short_name": "Dracarys",
+        "start_url": "/front-end/",
+        "display": "standalone",
+        "background_color": "#ffffff",
+        "lang": "en",
+        "scope": "/front-end/",
+        "theme_color": "#4DBA87",
+        "id": "/front-end/",
+        "icons": [
           {
-            src: 'src/assets/images/Logo/Logo-192x192.png',
-            sizes: '192x192',
-            type: 'image/png',
-            purpose: 'maskable',
+            "src": "/front-end/assets/images/Logo/Logo-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
           },
           {
-            src: 'src/assets/images/Logo/Logo-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'maskable',
-          },
+            "src": "/front-end/assets/images/Logo/Logo-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+          }
         ],
       },
       workbox: {
