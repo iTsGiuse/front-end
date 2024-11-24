@@ -33,15 +33,11 @@
         >
           <!-- Immagine -->
           <div class="col-md-3 text-center">
-            <img
-              :src="`@/assets/images/${adminItem.foto}.jpg`"
-              :alt="`Foto di ${adminItem.nome} ${adminItem.cognome}`"
-              class="img-fluid rounded-circle shadow"
-            />
+            <img :src="adminItem.foto" alt="Foto di {{adminItem.nome}} {{adminItem.cognome}}" class="img-fluid rounded-circle shadow"/>
           </div>
           <!-- Descrizione -->
           <div class="col-md-9">
-            <h5 class="text-primary">{{ adminItem.nome }} {{ adminItem.cognome }}</h5>
+            <h3 class="text-danger">{{ adminItem.nome }} {{ adminItem.cognome }}</h3>
             <p>{{ adminItem.descrizione }}</p>
           </div>
         </div>

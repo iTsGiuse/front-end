@@ -1,11 +1,14 @@
-
+import Giuse from './src/assets/images/Team/Giuse.jpeg';
+/* import Asia from './src/assets/images/Team/Locandina-Capodanno.jpg';
+import Claudia from './src/assets/images/Team/Locandina-Carnevale.jpg';
+import Marci from './src/assets/images/Team/Locandina-Natale.jpg'; */
 
 const admin = [
     {
         nome: "Giuseppe",
         cognome: "Amato",
         descrizione: "Negli ultimi mesi, l'emergere di nuove tecnologie ha reso più facile che mai la diffusione di informazioni errate e fuorvianti. Con l'avvento dei social media, chiunque ha la possibilità di pubblicare notizie, il che ha portato a un'esplosione di contenuti non verificati. Questo fenomeno non solo ha influito sulla percezione pubblica di eventi cruciali, come elezioni e crisi sanitarie, ma ha anche alimentato la disinformazione e la polarizzazione. La questione della verità è diventata una battaglia complessa, in cui le persone si trovano a dover discernere tra notizie autentiche e contenuti manipolati. La sfida è ancora più grande in un'epoca in cui algoritmi e robot influenzano ciò che vediamo e leggiamo, portando a un ciclo di feedback che rinforza le nostre convinzioni preesistenti. La lotta contro le fake news richiede quindi una maggiore alfabetizzazione mediatica, che possa aiutare gli individui a navigare in questo mare di informazioni e a distinguere tra fatti e finzione. In questo contesto, le istituzioni e le piattaforme sociali si trovano sotto pressione per sviluppare strumenti più efficaci per la verifica delle notizie, creando un ambiente dove gli utenti possano accedere a informazioni affidabili e accurate. Inoltre, la responsabilità individuale gioca un ruolo cruciale; gli utenti devono essere formati per riconoscere segnali di allerta e comprendere l'importanza della verifica delle fonti prima di condividere qualsiasi contenuto. Infine, la consapevolezza delle fake news non è solo una questione di corretta informazione, ma anche di protezione della democrazia e del dibattito pubblico.",
-        foto: "fake-news",
+        foto: Giuse,
         key: 1
     },
     {
