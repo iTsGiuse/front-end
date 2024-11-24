@@ -2,7 +2,6 @@ import { createApp } from 'vue';
 import './style.css';
 import App from './App.vue';
 import { router } from './router';
-import { createMetaManager } from 'vue-meta';
 
 // Register the service worker if available
 if ('serviceWorker' in navigator) {
@@ -21,5 +20,4 @@ if ('serviceWorker' in navigator) {
 
 createApp(App)
   .use(router)
-  .use(createMetaManager()) 
   .mount('#app');

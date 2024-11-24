@@ -28,7 +28,7 @@
                 const today = new Date();
                 const event = new Date(eventDate);
                 const threeWeeksBefore = new Date(event);
-                threeWeeksBefore.setDate(event.getDate() - 21); 
+                threeWeeksBefore.setDate(event.getDate() - 30); 
                 const daysDiff = Math.ceil((threeWeeksBefore - today) / (1000 * 60 * 60 * 24));
                 
                 const isDisabled = daysDiff > 0; 
