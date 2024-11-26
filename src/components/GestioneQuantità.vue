@@ -28,6 +28,10 @@ export default {
             rum: {
               quantita: { litri: 0.02, centilitri: 2, millilitri: 20 },
               bottiglia: { litri: 0.7, centilitri: 70, millilitri: 700 }
+            },
+            gin: {
+              quantita: { litri: 0.05, centilitri: 5, millilitri: 50 },
+              bottiglia: { litri: 0.7, centilitri: 70, millilitri: 700 }
             }
           },
           birra: {
@@ -119,7 +123,17 @@ export default {
               quantita: { litri: 0.02, centilitri: 2, millilitri: 20 },
               bottiglia: { litri: 1, centilitri: 100, millilitri: 1000 }
             }
-          }
+          },
+          /* accessori :{
+            cubetti: {
+              quantita: { litri: 0, centilitri: 0, millilitri: 0 },
+              bottiglia: { litri: 1, centilitri: 100, millilitri: 1000 },
+            },
+            bicchieri:{
+              quantita: { litri: 0, centilitri: 0, millilitri:0},
+              bottiglia: {litri: 0, centilitri: 0, millilitri:0}
+            },
+          } */
         },
         rimanenze: {
           acqua: {
@@ -138,6 +152,10 @@ export default {
               bottiglia: { litri: 0.7, centilitri: 70, millilitri: 700 }
             },
             rum: {
+              quantita: { litri: 0, centilitri: 0, millilitri: 0 },
+              bottiglia: { litri: 0.7, centilitri: 70, millilitri: 700 }
+            },
+            gin: {
               quantita: { litri: 0, centilitri: 0, millilitri: 0 },
               bottiglia: { litri: 0.7, centilitri: 70, millilitri: 700 }
             }
@@ -232,6 +250,16 @@ export default {
               bottiglia: { litri: 1, centilitri: 100, millilitri: 1000 }
             }
           },
+          /* accessori :{
+            cubetti: {
+              quantita: { litri: 0, centilitri: 0, millilitri: 0 },
+              bottiglia: { litri: 0, centilitri: 0, millilitri: 0 },
+            },
+            bicchieri:{
+              quantita: { litri: 0, centilitri: 0, millilitri:0},
+              bottiglia: {litri: 0, centilitri: 0, millilitri:0}
+            },
+          } */
         }
       },
       numeroPersone: 1,
@@ -337,89 +365,115 @@ export default {
       }
     },
     downloadPDF() {
-      const doc = new jsPDF();
-      const pageWidth = doc.internal.pageSize.width;
-      const logoPath = "../assets/images/Logo/Logo-512x512.png";
-      
-      // Aggiungere il logo
-      const imgWidth = 50;
-      const imgHeight = 50;
-      const imgX = (pageWidth - imgWidth) / 2; // Centrare il logo
-      try {
-        doc.addImage(logoPath, "png", imgX, 10, imgWidth, imgHeight);
-      } catch (error) {
-        console.error("Errore nel caricare l'immagine del logo:", error);
-      }
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.width;
+  const pageHeight = doc.internal.pageSize.height;
 
+  const imgWidth = 50;
+  const imgHeight = 50;
+  const imgX = (pageWidth - imgWidth) / 2;
 
-      // Titolo principale
-      doc.setFontSize(18);
-      doc.text("Acquisto Definitivo", pageWidth / 2, 70, { align: "center" });
+  try {
+    doc.addImage(Logo, "png", imgX, 10, imgWidth, imgHeight);
+  } catch (error) {
+    console.error("Errore nel caricare l'immagine del logo:", error);
+  }
 
-      // Numero di persone
+  let startY = 90;
+  const currentDate = new Date();
+  const formattedDate = currentDate.toLocaleString();
+  doc.setFontSize(12);
+  doc.text(`NUMERO DI PERSONE: ${this.numeroPersone}`, 14, startY);
+  doc.text(`GENERATO IL: ${formattedDate}`, pageWidth - 14, startY, { align: "right" });
+
+  let categoryStartY = startY + 30;
+
+  Object.keys(this.bevande.acquisto).forEach((categoryName) => {
+    const categoryData = this.bevande.acquisto[categoryName];
+
+    if (!categoryData || Object.keys(categoryData).length === 0) {
       doc.setFontSize(12);
-      doc.text(`Numero di persone: ${this.numeroPersone}`, pageWidth / 2, 80, { align: "center" });
-
-      // Aggiungi data e ora
-      const currentDate = new Date();
-      const formattedDate = currentDate.toLocaleString(); // Formattazione della data
-      doc.setFontSize(10);
-      doc.text(`Generato il: ${formattedDate}`, 10, 95);
-
-      // Loop per le categorie di bevande
-      Object.keys(this.bevande.acquisto).forEach((categoryName) => {
-        const startY = doc.previousAutoTable ? doc.previousAutoTable.finalY + 10 : 110;
-
-        // Titolo categoria
-        doc.setFontSize(14);
-        doc.text(categoryName, 10, startY);
-
-        const categoryData = this.bevande.acquisto[categoryName];
-
-        // Verifica se la categoria è vuota
-        if (!categoryData || Object.keys(categoryData).length === 0) {
-          doc.setFontSize(12);
-          doc.text("Nessun dato disponibile", 10, startY + 10);
-          return;
-        }
-
-        // Tabella dei dettagli
-        const tableData = Object.entries(categoryData).map(([drinkName, drink]) => [
-          drinkName,
-          `${drink.quantitaNecessaria.toFixed(2)} l\n` +
-          `${drink.millilitriNecessari ? `${drink.millilitriNecessari.toFixed(0)} ml\n` : ""}` +
-          `${drink.centilitriNecessari ? `${drink.centilitriNecessari.toFixed(0)} cl\n` : ""}` +
-          `${drink.bottiglieNecessarie ? `${drink.bottiglieNecessarie.toFixed(2)} bottiglie` : ""}`,
-          `${drink.rimanenzaDisponibile.toFixed(2)} l\n` +
-          `${drink.rimanenzaMillilitri.toFixed(0)} ml\n` +
-          `${drink.rimanenzaCentilitri.toFixed(0)} cl\n` +
-          `${drink.rimanenzaBottiglie.toFixed(2)} bottiglie`,
-          drink.quantitaNecessaria > drink.rimanenzaDisponibile
-          ? `${(drink.quantitaNecessaria - drink.rimanenzaDisponibile).toFixed(2)} litri da comprare\n` +
-            `${(drink.millilitriNecessari - drink.rimanenzaMillilitri).toFixed(0)} ml da comprare\n` +
-            `${(drink.centilitriNecessari - drink.rimanenzaCentilitri).toFixed(0)} cl da comprare\n` +
-            `${(drink.bottiglieNecessarie - drink.rimanenzaBottiglie).toFixed(2)} bottiglie da comprare`
-          : `${(drink.rimanenzaDisponibile - drink.quantitaNecessaria).toFixed(2)} litri in eccesso\n` +
-            `${(drink.rimanenzaMillilitri - drink.millilitriNecessari).toFixed(0)} ml in eccesso\n` +
-            `${(drink.rimanenzaCentilitri - drink.centilitriNecessari).toFixed(0)} cl in eccesso\n` +
-            `${(drink.rimanenzaBottiglie - drink.bottiglieNecessarie).toFixed(2)} bottiglie in eccesso`
-        ]);
-
-        doc.autoTable({
-          startY: startY + 6,
-          head: [["Dettaglio", "Quantità da acquistare", "Nostra Quantità", "Quantità da comprare / Rimanenze"]],
-          body: tableData,
-          styles: { fontSize: 10, cellPadding: 2 },
-          headStyles: { fillColor: '#941110', textColor: [255, 255, 255] },
-        });
-      });
-
-      // Salva il PDF
-      doc.save("Acquisto_Definitivo.pdf");
+      doc.text("NESSUN DATO DISPONIBILE", 10, categoryStartY + 10);
+      return;
     }
+
+    // Calcolo della dimensione della tabella per verificare lo spazio disponibile
+    const tableData = Object.entries(categoryData).map(([drinkName, drink]) => [
+      drinkName.toUpperCase(),
+      {
+        content:
+          `${drink.quantitaNecessaria.toFixed(2)} L\n` +
+          `${drink.millilitriNecessari ? `${drink.millilitriNecessari.toFixed(0)} ML\n` : ""}` +
+          `${drink.centilitriNecessari ? `${drink.centilitriNecessari.toFixed(0)} CL\n` : ""}` +
+          `${drink.bottiglieNecessarie ? `${drink.bottiglieNecessarie.toFixed(2)} BOTTIGLIE` : ""}`,
+        styles: { halign: "center" },
+      },
+      {
+        content:
+          `${drink.rimanenzaDisponibile.toFixed(2)} L\n` +
+          `${drink.rimanenzaMillilitri.toFixed(0)} ML\n` +
+          `${drink.rimanenzaCentilitri.toFixed(0)} CL\n` +
+          `${drink.rimanenzaBottiglie.toFixed(2)} BOTTIGLIE`,
+        styles: { halign: "center" },
+      },
+      {
+        content: drink.quantitaNecessaria > drink.rimanenzaDisponibile
+          ? `${(drink.quantitaNecessaria - drink.rimanenzaDisponibile).toFixed(2)} L DA COMPRARE\n` +
+            `${(drink.millilitriNecessari - drink.rimanenzaMillilitri).toFixed(0)} ML DA COMPRARE\n` +
+            `${(drink.centilitriNecessari - drink.rimanenzaCentilitri).toFixed(0)} CL DA COMPRARE\n` +
+            `${(drink.bottiglieNecessarie - drink.rimanenzaBottiglie).toFixed(2)} BOTT DA COMPRARE`
+          : `${(drink.rimanenzaDisponibile - drink.quantitaNecessaria).toFixed(2)} L IN ECCESSO\n` +
+            `${(drink.rimanenzaMillilitri - drink.millilitriNecessari).toFixed(0)} ML IN ECCESSO\n` +
+            `${(drink.rimanenzaCentilitri - drink.centilitriNecessari).toFixed(0)} CL IN ECCESSO\n` +
+            `${(drink.rimanenzaBottiglie - drink.bottiglieNecessarie).toFixed(2)} BOTT IN ECCESSO`,
+        styles: {
+          textColor: drink.quantitaNecessaria > drink.rimanenzaDisponibile ? [255, 0, 0] : [0, 128, 0],
+          halign: "center",
+        },
+      },
+    ]);
+
+    // Calcola l'altezza della tabella per capire se c'è abbastanza spazio
+    const tableHeight = tableData.length * 10 + 40; // Circa 10 per riga e un margine
+    if (categoryStartY + tableHeight > pageHeight) {
+      doc.addPage();
+      categoryStartY = 20; // Reset Y per nuova pagina
+    }
+
+    // Titolo categoria
+    doc.setFontSize(14);
+    doc.text(categoryName.toUpperCase(), 14, categoryStartY);
+
+    // Aggiungi la tabella
+    doc.autoTable({
+      startY: categoryStartY + 10,
+      head: [["DETTAGLIO", "QUANTITÀ DA ACQUISTARE", "NOSTRA QUANTITÀ", "QUANTITÀ DA COMPRARE / RIMANENZE"]],
+      body: tableData,
+      styles: { fontSize: 10, cellPadding: 2, valign: "middle", font: "helvetica", fontStyle: "normal" },
+      headStyles: { fillColor: "#941110", textColor: [255, 255, 255], halign: "center" },
+      bodyStyles: { textColor: 0, halign: "center" },
+      didDrawPage: (data) => {
+        if (data.pageCount > 1 && categoryStartY > pageHeight - 30) {
+          doc.addPage();
+          categoryStartY = 20; // Reset posizione per la nuova pagina
+        }
+      },
+    });
+
+    categoryStartY = doc.previousAutoTable.finalY + 10;
+  });
+
+  // Footer sulla pagina finale
+  doc.setFontSize(20);
+  doc.setFont("helvetica", "italic", "bold");
+  doc.setTextColor(148, 17, 16);
+  doc.text("Dracarys Staff", pageWidth / 2, categoryStartY + 30, { align: "center" });
+
+  const fileDate = currentDate.toISOString().split("T")[0];
+  doc.save(`Acquisto_Definitivo_${fileDate}.pdf`);
+}
   }
 }
-
 </script>
 
 <template>
