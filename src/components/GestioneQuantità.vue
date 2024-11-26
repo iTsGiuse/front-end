@@ -1,10 +1,13 @@
 <script>
 import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import Logo from "../assets/images/Logo/Logo-512x512.png";
 
 export default {
   name: 'GestioneQuantità',
   data(){
     return {
+      logoPDF: Logo,
       bevande : {
         acquisto: {
           acqua: {
@@ -334,110 +337,87 @@ export default {
       }
     },
     downloadPDF() {
-  const doc = new jsPDF();
-  const phaseData = [];
+      const doc = new jsPDF();
+      const pageWidth = doc.internal.pageSize.width;
+      const logoPath = "../assets/images/Logo/Logo-512x512.png";
+      
+      // Aggiungere il logo
+      const imgWidth = 50;
+      const imgHeight = 50;
+      const imgX = (pageWidth - imgWidth) / 2; // Centrare il logo
+      try {
+        doc.addImage(logoPath, "png", imgX, 10, imgWidth, imgHeight);
+      } catch (error) {
+        console.error("Errore nel caricare l'immagine del logo:", error);
+      }
 
-  // Raccogliamo i dati dalla fase 4
-  for (let categoryName in this.bevande.acquisto) {
-    let category = this.bevande.acquisto[categoryName];
-    let drinks = [];
 
-    for (let drinkName in category) {
-      let drink = category[drinkName];
+      // Titolo principale
+      doc.setFontSize(18);
+      doc.text("Acquisto Definitivo", pageWidth / 2, 70, { align: "center" });
 
-      drinks.push({
-        name: drinkName,
-        quantitaNecessaria: drink.quantitaNecessaria,
-        rimanenzaDisponibile: drink.rimanenzaDisponibile,
-        millilitriNecessari: drink.millilitriNecessari,
-        centilitriNecessari: drink.centilitriNecessari,
-        bottiglieNecessarie: drink.bottiglieNecessarie,
-        rimanenzaMillilitri: drink.rimanenzaMillilitri,
-        rimanenzaCentilitri: drink.rimanenzaCentilitri,
-        rimanenzaBottiglie: drink.rimanenzaBottiglie
+      // Numero di persone
+      doc.setFontSize(12);
+      doc.text(`Numero di persone: ${this.numeroPersone}`, pageWidth / 2, 80, { align: "center" });
+
+      // Aggiungi data e ora
+      const currentDate = new Date();
+      const formattedDate = currentDate.toLocaleString(); // Formattazione della data
+      doc.setFontSize(10);
+      doc.text(`Generato il: ${formattedDate}`, 10, 95);
+
+      // Loop per le categorie di bevande
+      Object.keys(this.bevande.acquisto).forEach((categoryName) => {
+        const startY = doc.previousAutoTable ? doc.previousAutoTable.finalY + 10 : 110;
+
+        // Titolo categoria
+        doc.setFontSize(14);
+        doc.text(categoryName, 10, startY);
+
+        const categoryData = this.bevande.acquisto[categoryName];
+
+        // Verifica se la categoria è vuota
+        if (!categoryData || Object.keys(categoryData).length === 0) {
+          doc.setFontSize(12);
+          doc.text("Nessun dato disponibile", 10, startY + 10);
+          return;
+        }
+
+        // Tabella dei dettagli
+        const tableData = Object.entries(categoryData).map(([drinkName, drink]) => [
+          drinkName,
+          `${drink.quantitaNecessaria.toFixed(2)} l\n` +
+          `${drink.millilitriNecessari ? `${drink.millilitriNecessari.toFixed(0)} ml\n` : ""}` +
+          `${drink.centilitriNecessari ? `${drink.centilitriNecessari.toFixed(0)} cl\n` : ""}` +
+          `${drink.bottiglieNecessarie ? `${drink.bottiglieNecessarie.toFixed(2)} bottiglie` : ""}`,
+          `${drink.rimanenzaDisponibile.toFixed(2)} l\n` +
+          `${drink.rimanenzaMillilitri.toFixed(0)} ml\n` +
+          `${drink.rimanenzaCentilitri.toFixed(0)} cl\n` +
+          `${drink.rimanenzaBottiglie.toFixed(2)} bottiglie`,
+          drink.quantitaNecessaria > drink.rimanenzaDisponibile
+          ? `${(drink.quantitaNecessaria - drink.rimanenzaDisponibile).toFixed(2)} litri da comprare\n` +
+            `${(drink.millilitriNecessari - drink.rimanenzaMillilitri).toFixed(0)} ml da comprare\n` +
+            `${(drink.centilitriNecessari - drink.rimanenzaCentilitri).toFixed(0)} cl da comprare\n` +
+            `${(drink.bottiglieNecessarie - drink.rimanenzaBottiglie).toFixed(2)} bottiglie da comprare`
+          : `${(drink.rimanenzaDisponibile - drink.quantitaNecessaria).toFixed(2)} litri in eccesso\n` +
+            `${(drink.rimanenzaMillilitri - drink.millilitriNecessari).toFixed(0)} ml in eccesso\n` +
+            `${(drink.rimanenzaCentilitri - drink.centilitriNecessari).toFixed(0)} cl in eccesso\n` +
+            `${(drink.rimanenzaBottiglie - drink.bottiglieNecessarie).toFixed(2)} bottiglie in eccesso`
+        ]);
+
+        doc.autoTable({
+          startY: startY + 6,
+          head: [["Dettaglio", "Quantità da acquistare", "Nostra Quantità", "Quantità da comprare / Rimanenze"]],
+          body: tableData,
+          styles: { fontSize: 10, cellPadding: 2 },
+          headStyles: { fillColor: '#941110', textColor: [255, 255, 255] },
+        });
       });
+
+      // Salva il PDF
+      doc.save("Acquisto_Definitivo.pdf");
     }
-
-    phaseData.push({ category: categoryName, drinks });
   }
-
-  // Aggiungi la data del giorno corrente
-  const today = new Date();
-  const dateStr = `${today.getDate().toString().padStart(2, '0')}/${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getFullYear()}`;
-
-  // Aggiungi il titolo e i dettagli iniziali
-  doc.setFontSize(16);
-  doc.text('BERE PER FESTA', 20, 20);
-  doc.setFontSize(12);
-  doc.text(`NUMERO PERSONE: ${this.numeroPersone}`, 20, 30);
-  doc.text(`DATA: ${dateStr}`, 160, 30);
-
-  let yOffset = 40; // Posizione iniziale per i dati
-
-  // Itera sulle categorie e bevande per aggiungere i dettagli al PDF
-  phaseData.forEach(item => {
-    // Categoria
-    doc.text(item.category, 20, yOffset);
-    yOffset += 5; // Aggiungi un po' di spazio tra le categorie
-
-    // Intestazione della tabella sotto ogni categoria
-    doc.text('NOME', 20, yOffset);
-    doc.text('ACQ.', 50, yOffset);
-    doc.text('NS. QUANT.', 90, yOffset);
-    doc.text('DA COMPRARE / RIAMANENZA', 140, yOffset);
-    yOffset += 10;
-
-    // Dettagli per ciascuna bevanda
-    item.drinks.forEach(drink => {
-      // Dettagli della bevanda
-      doc.text(drink.name, 20, yOffset);
-
-      // Quantità necessarie (con le varie unità di misura)
-      doc.text(`${drink.quantitaNecessaria.toFixed(2)} l`, 50, yOffset + 10);
-      doc.text(`${drink.millilitriNecessari} ml`, 90, yOffset + 10);
-      doc.text(`${drink.centilitriNecessari} cl`, 130, yOffset + 10);
-      doc.text(`${drink.bottiglieNecessarie.toFixed(2)} bott`, 170, yOffset + 10);
-
-      // Quantità rimanenti (con le varie unità di misura)
-      doc.text(`${drink.rimanenzaDisponibile.toFixed(2)} l`, 220, yOffset + 10);
-      doc.text(`${drink.rimanenzaMillilitri} ml`, 260, yOffset + 10);
-      doc.text(`${drink.rimanenzaCentilitri} cl`, 300, yOffset + 10);
-      doc.text(`${drink.rimanenzaBottiglie.toFixed(2)} bott`, 340, yOffset + 10);
-
-      // Quantità da comprare / in eccesso
-      if (drink.quantitaNecessaria > drink.rimanenzaDisponibile) {
-        doc.text(`${(drink.quantitaNecessaria - drink.rimanenzaDisponibile).toFixed(2)} l`, 380, yOffset + 10);
-        doc.text(`${(drink.millilitriNecessari - drink.rimanenzaMillilitri).toFixed(0)} ml`, 420, yOffset + 10);
-        doc.text(`${(drink.centilitriNecessari - drink.rimanenzaCentilitri).toFixed(0)} cl`, 460, yOffset + 10);
-        doc.text(`${(drink.bottiglieNecessarie - drink.rimanenzaBottiglie).toFixed(2)} bott`, 500, yOffset + 10);
-      } else {
-        doc.text(`${(drink.rimanenzaDisponibile - drink.quantitaNecessaria).toFixed(2)} l`, 380, yOffset + 10);
-        doc.text(`${(drink.rimanenzaMillilitri - drink.millilitriNecessari).toFixed(0)} ml`, 420, yOffset + 10);
-        doc.text(`${(drink.rimanenzaCentilitri - drink.centilitriNecessari).toFixed(0)} cl`, 460, yOffset + 10);
-        doc.text(`${(drink.rimanenzaBottiglie - drink.bottiglieNecessarie).toFixed(2)} bott`, 500, yOffset + 10);
-      }
-
-      yOffset += 20; // Aggiungi spazio tra le righe di dati
-
-      // Aggiungi una nuova pagina se necessario
-      if (yOffset > 270) {
-        doc.addPage();
-        yOffset = 20; // Reset della posizione verticale per una nuova pagina
-
-        // Ripetere l'intestazione della tabella
-        doc.text('NOME', 20, yOffset);
-        doc.text('ACQ.', 50, yOffset);
-        doc.text('NS. QUANT.', 90, yOffset);
-        doc.text('DA COMPRARE / RIAMANENZA', 140, yOffset);
-        yOffset += 10; // Spostarsi alla riga successiva
-      }
-    });
-  });
-
-  // Salva il PDF
-  doc.save('bere_per_festa.pdf');
-}
-}
 }
 
 </script>
