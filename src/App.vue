@@ -1,6 +1,7 @@
 <script setup>
   import Header from './components/Header.vue';
   import Footer from './components/Footer.vue';
+  import SpotifyPlayer from './components/SpotifyPlayer.vue';
 </script>
 
 <template>
@@ -9,6 +10,7 @@
     <router-view></router-view>
   </main>
   <Footer></Footer>
+  <SpotifyPlayer></SpotifyPlayer>
 </template>
 
 <style lang="scss">

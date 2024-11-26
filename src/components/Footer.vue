@@ -11,7 +11,7 @@
             <div class="row">
                 <div class="col-12 d-flex justify-content-center">
                     <div class="logo">
-                        <img src="../assets/images/Logo/Logo.jpg" alt="Logo">
+                        <router-link to="/home"><img src="../assets/images/Logo/Logo.jpg" alt="Logo"></router-link>
                     </div>
                 </div>
             </div>

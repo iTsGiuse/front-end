@@ -1,17 +1,11 @@
-<script>
-    export default {
-        name: 'Header'
-    }
-</script>
-
 <template>
     <header>
         <nav class="navbar navbar-expand-lg">
             <div class="container">
-                <a class="navbar-brand" href="#">
+                <router-link to="/home" class="navbar-brand">
                     <img src="../assets/images/Logo/Logo.jpg" alt="Logo" class="img-fluid">
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                </router-link>
+                <button class="navbar-toggler white-toggler" style="color: white;" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
@@ -63,6 +57,15 @@
             }
         }
 
+        .white-toggler {
+            border: 1px solid #fff !important;  
+            padding: 10px 15px !important; 
+        }
+
+        .white-toggler .navbar-toggler-icon {
+            filter: invert(100%);
+        }
+
         ul {
             list-style: none;
             display: flex;
@@ -109,5 +112,54 @@
         .nav-link.active {
             color: #ccc; 
         }
+
+        @media (max-width: 991px) {
+            /* Aggiungi stili per tablet e smartphone */
+            .navbar-collapse {
+                text-align: center;
+            }
+
+            ul {
+                flex-direction: column; /* La lista dei link diventa verticale */
+                align-items: center;
+            }
+
+            li {
+                margin: 10px 0; /* Distanza tra gli elementi */
+
+                .nav-link {
+                    text-decoration: none;
+                    color: white;
+                    display: block;
+                    padding: 10px 15px;
+                    border-radius: 5px;
+                    position: relative; 
+
+                    &::after {
+                        content: '';
+                        display: block;
+                        width: 0;
+                        height: 5px;
+                        background: black; 
+                        transition: width 0.3s;
+                        position: absolute;
+                        left: 0;
+                    }
+
+                    &.active::after {
+                        height: 80%; 
+                        width: 5px !important;
+                        top: 10%;
+                        left: -30%;
+                    }
+
+                    &:hover {
+                        color: #ccc; 
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+
     }
 </style>
