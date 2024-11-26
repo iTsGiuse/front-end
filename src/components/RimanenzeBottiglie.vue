@@ -1,166 +1,197 @@
 <template>
-  <section id="calcoloBottiglie">
-    <div class="container py-5">
-      <div class="row">
+  <section id="calcoloBottiglie" class="container my-5">
 
-        <!-- Fase 1: Inserisci il numero di persone -->
-        <div v-if="currentStep === 1" class="col-12 mb-4">
-          <h3 class="step-title">Inserisci il numero di persone</h3>
-          <div class="mb-3">
-            <input 
-              v-model.number="numberOfPeople" 
-              type="number" 
-              min="1" 
-              class="form-control form-control-lg"
-              placeholder="Numero di persone"
-            />
-          </div>
-          <button @click="prosegui" class="btn btn-primary btn-lg w-100">Conferma</button>
+    <!-- Fase 1 - Numero persone -->
+    <div v-if="fase === 1" class="mt-4" >
+      <h2 class="text-center m-5">Numero di persone</h2>
+      <div class="d-flex justify-content-between align-items-center ">
+        <div class="form-group d-flex">
+          <label for="numeroPersone">Quante persone parteciperanno alla festa?</label>
+          <input type="number" id="numeroPersone" v-model="numeroPersone" class="form-control" placeholder="Inserisci il numero di persone" min="1"/>
         </div>
-
-        <!-- Fase 2: Inserimento quantità -->
-        <div v-if="currentStep === 2" class="col-12 mb-4">
-          <h3 class="step-title">Inserisci le quantità disponibili</h3>
-          <div v-for="(category, categoryName) in mieQuantità" :key="categoryName">
-            <h4 class="category-title">{{ categoryName }}</h4>
-            <table class="table table-bordered custom-table">
-              <thead>
-                <tr>
-                  <th v-for="(header, index) in intestazioniTabelle.inserisciQuantità" :key="index">{{ header }}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(item, itemName) in category" :key="itemName">
-                  <td>{{ itemName }}</td>
-                  <td><input v-model.number="item.amountPerBottle" type="number" min="0" @input="handleInput($event, categoryName, itemName, 'bottiglie')" class="form-control" placeholder="Bottiglie" /></td>
-                  <td><input v-model.number="item.liters" type="number" min="0" @input="handleInput($event, categoryName, itemName, 'litri')" class="form-control" placeholder="Litri" /></td>
-                  <td><input v-model.number="item.centiliters" type="number" min="0" @input="handleInput($event, categoryName, itemName, 'centilitri')" class="form-control" placeholder="Centilitri" /></td>
-                  <td><input v-model.number="item.milliliters" type="number" min="0" @input="handleInput($event, categoryName, itemName, 'millilitri')" class="form-control" placeholder="Millilitri" /></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="d-flex justify-content-between mt-4">
-            <button @click="goBack" class="btn btn-secondary btn-lg">Indietro</button>
-            <button @click="prosegui" class="btn btn-primary btn-lg">Avanti</button>
-          </div>
+        <div class="text-center">
+          <button class="btn btn-danger mt-3" @click="proseguiFase2" :disabled="numeroPersone <= 0">Conferma</button>
         </div>
-
-        <!-- Fase 3: Calcolo delle quantità da acquistare -->
-        <div v-if="currentStep === 3" class="col-12 mb-4">
-          <h3 class="step-title">Quantità da acquistare</h3>
-          <div v-for="(category, categoryName) in categories" :key="categoryName">
-            <h4 class="category-title">{{ categoryName.charAt(0).toUpperCase() + categoryName.slice(1) }}</h4>
-            <table class="table table-bordered custom-table">
-              <thead>
-                <tr>
-                  <th v-for="(header, index) in intestazioniTabelle.festaQuantità" :key="index">{{ header }}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(item, itemName) in category" :key="itemName">
-                  <td>{{ itemName.charAt(0).toUpperCase() + itemName.slice(1) }}</td>
-                  <td>{{ calculateTotal(categoryName, itemName).bottles || '-' }}</td>
-                  <td>{{ calculateTotal(categoryName, itemName).liters || '-' }}</td>
-                  <td>{{ calculateTotal(categoryName, itemName).centiliters || '-' }}</td>
-                  <td>{{ calculateTotal(categoryName, itemName).milliliters || '-' }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="d-flex justify-content-between mt-4">
-            <button @click="goBack" class="btn btn-secondary btn-lg">Indietro</button>
-            <button @click="prosegui" class="btn btn-primary btn-lg">Avanti</button>
-          </div>
-        </div>
-
-        <!-- Fase 4: Bilancio -->
-        <div v-if="currentStep === 4" class="col-12 mb-4">
-          <h3 class="step-title">Bilancio (Quantità da Acquistare - Quantità Avanzate)</h3>
-          <div v-for="(category, categoryName) in categories" :key="categoryName">
-            <h4 class="category-title">{{ categoryName.charAt(0).toUpperCase() + categoryName.slice(1) }}</h4>
-            <table class="table table-bordered custom-table">
-              <thead>
-                <tr>
-                  <th v-for="(header, index) in intestazioniTabelle.Bilancio" :key="index">{{ header }}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(item, itemName) in category" :key="itemName">
-                  <td>{{ itemName.charAt(0).toUpperCase() + itemName.slice(1) }}</td>
-                  
-                  <!-- Quantità da Acquistare -->
-                  <td>
-                    <div>
-                      <p v-if="calculateDifference(categoryName, itemName).acquisto.bottles">
-                        {{ calculateDifference(categoryName, itemName).acquisto.bottles || 0 }} 
-                      </p>
-                      <p v-if="calculateDifference(categoryName, itemName).acquisto.liters">
-                        {{ calculateDifference(categoryName, itemName).acquisto.liters }} 
-                      </p>
-                      <p v-if="calculateDifference(categoryName, itemName).acquisto.milliliters">
-                        {{ calculateDifference(categoryName, itemName).acquisto.milliliters }} 
-                      </p>
-                      <p v-if="calculateDifference(categoryName, itemName).acquisto.centiliters">
-                        {{ calculateDifference(categoryName, itemName).acquisto.centiliters }} 
-                      </p>
-
-                    </div>
-                  </td>
-
-                  <!-- Quantità Avanzate -->
-                  <td>
-                    <div>
-                      <p v-if="calculateDifference(categoryName, itemName).rimanenza.bottles">
-                        {{ calculateDifference(categoryName, itemName).rimanenza.bottles || 0 }} 
-                      </p>
-                      <p v-if="calculateDifference(categoryName, itemName).rimanenza.liters">
-                        {{ calculateDifference(categoryName, itemName).rimanenza.liters }}
-                      </p>
-                      <p v-if="calculateDifference(categoryName, itemName).rimanenza.milliliters">
-                        {{ calculateDifference(categoryName, itemName).rimanenza.milliliters }} 
-                      </p>
-                      <p v-if="calculateDifference(categoryName, itemName).rimanenza.centiliters">
-                        {{ calculateDifference(categoryName, itemName).rimanenza.centiliters }} 
-                      </p>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="d-flex justify-content-between mt-4">
-            <button @click="goBack" class="btn btn-secondary btn-lg">Indietro</button>
-            <button @click="finalize" class="btn btn-success btn-lg">Finalizza</button>
-          </div>
-        </div>
-
-        <!-- Indicatori di Fase -->
-        <div class="col-12 mt-5">
-          <div class="progress-indicator d-flex justify-content-center mb-4">
-            <div class="step" :class="{ active: currentStep >= 1 }">
-              <span class="step-number">1</span>
-              <span class="step-label">Persone</span>
-            </div>
-            <div class="step" :class="{ active: currentStep >= 2 }">
-              <span class="step-number">2</span>
-              <span class="step-label">Quantità</span>
-            </div>
-            <div class="step" :class="{ active: currentStep >= 3 }">
-              <span class="step-number">3</span>
-              <span class="step-label">Totale</span>
-            </div>
-            <div class="step" :class="{ active: currentStep >= 4 }">
-              <span class="step-number">4</span>
-              <span class="step-label">Bilancio</span>
-            </div>
-          </div>
-        </div>
-
       </div>
     </div>
+
+    <!-- Fase 2 - Mie Quantità -->
+    <div v-if="fase === 2" class="mt-4">
+      <h2 class="text-center">Quantità Disponibili</h2>
+      <template v-for="(category, categoryName) in bevande.rimanenze" :key="categoryName">
+        <h3 class="mt-3">{{ categoryName }}</h3>
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th>Dettaglio</th>
+              <th>Bottiglie</th>
+              <th>Litri</th>
+              <th>Centilitri</th>
+              <th>Millilitri</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template v-for="(drink, drinkName) in category" :key="drinkName">
+              <tr>
+                <td>{{ drinkName }}</td>
+                <td>{{ drink.bottiglie }}</td>
+                <td>
+                  <input type="number" v-model="drink.quantita.litri" class="form-control" min="0" @input="AggiungiQuantita(drink, 'litri')" placeholder="Litri" />
+                </td>
+                <td>
+                  <input type="number" v-model="drink.quantita.centilitri" class="form-control" min="0" @input="AggiungiQuantita(drink, 'centilitri')" placeholder="Centilitri" />
+                </td>
+                <td>
+                  <input type="number" v-model="drink.quantita.millilitri" class="form-control" min="0" @input="AggiungiQuantita(drink, 'millilitri')" placeholder="Millilitri" />
+                </td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </template>
+      <div class="d-flex justify-content-between">
+        <button class="btn btn-secondary" @click="fase--">Indietro</button>
+        <button class="btn btn-danger" @click="vaiAFase3">Avanti</button>
+      </div>
+    </div>
+
+    <!-- Fase 3 - Quantità necessarie -->
+    <div v-if="fase === 3" class="mt-4">
+      <h2 class="text-center">Quantità Necessarie</h2>
+      <template v-for="(category, categoryName) in bevande.acquisto" :key="categoryName">
+        <h3 class="mt-3">{{ categoryName }}</h3>
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th>Dettaglio</th>
+              <th>Bottiglie necessarie</th>
+              <th>Litri</th>
+              <th>Centilitri</th>
+              <th>Millilitri</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template v-for="(drink, drinkName) in category" :key="drinkName">
+              <tr>
+                <td>{{ drinkName }}</td>
+                <td>{{ drink.bottiglie }}</td> 
+                <td>{{ drink.quantita.litri }}</td>
+                <td>{{ drink.quantita.centilitri }}</td>
+                <td>{{ drink.quantita.millilitri }}</td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </template>
+      <div class="d-flex justify-content-between">
+        <button class="btn btn-secondary" @click="fase--">Indietro</button>
+        <button class="btn btn-danger" @click="vaiAFase4">Avanti</button>
+      </div>
+    </div>
+
+    <!-- Fase 4 - Acquisto definitivo -->
+    <div v-if="fase === 4" class="mt-4">
+      <div class="d-flex justify-content-between">
+        <h2>Acquisto Definitivo</h2>
+        <h2>Persone: {{ numeroPersone }}</h2>
+      </div>
+      <template v-for="(category, categoryName) in bevande.acquisto" :key="categoryName">
+        <h3 class="mt-3">{{ categoryName }}</h3>
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th>Dettaglio</th>
+              <th>Quantità da acquistare</th>
+              <th>Nostra Quantità</th>
+              <th>Quantità da comprare / Rimanenze</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template v-for="(drink, drinkName) in category" :key="drinkName">
+              <tr>
+                <td>{{ drinkName }}</td>
+                <td>
+                  <p>
+                    <span>{{ drink.quantitaNecessaria.toFixed(2) }} l</span>
+                    <br />
+                    <span v-if="drink.millilitriNecessari !== 0">{{ drink.millilitriNecessari.toFixed(0) }} ml</span>
+                    <br />
+                    <span v-if="drink.centilitriNecessari !== 0">{{ drink.centilitriNecessari.toFixed(0) }} cl</span>
+                    <br />
+                    <span v-if="drink.bottiglieNecessarie !== 0">{{ drink.bottiglieNecessarie.toFixed(2) }} bottiglie</span>
+                  </p>
+                </td> 
+                <td>
+                  <p>
+                    <span>{{ drink.rimanenzaDisponibile.toFixed(2) }} l</span>
+                    <br />
+                    <span>{{ drink.rimanenzaMillilitri.toFixed(0) }} ml</span>
+                    <br />
+                    <span>{{ drink.rimanenzaCentilitri.toFixed(0) }} cl</span>
+                    <br />
+                    <span>{{ drink.rimanenzaBottiglie.toFixed(2) }} bottiglie</span>
+                  </p>
+                </td>
+                <td>
+                  <p v-if="drink.quantitaNecessaria > drink.rimanenzaDisponibile">
+                    <span>{{ (drink.quantitaNecessaria - drink.rimanenzaDisponibile).toFixed(2) }} litri da comprare</span>
+                    <br />
+                    <span>{{ (drink.millilitriNecessari - drink.rimanenzaMillilitri).toFixed(0) }} ml da comprare</span>
+                    <br />
+                    <span>{{ (drink.centilitriNecessari - drink.rimanenzaCentilitri).toFixed(0) }} cl da comprare</span>
+                    <br />
+                    <span>{{ (drink.bottiglieNecessarie - drink.rimanenzaBottiglie).toFixed(2) }} bottiglie da comprare</span>
+                  </p>
+                  <p v-else>
+                    <span class="text-success">{{ drink.rimanenzaDisponibile.toFixed(2) }} litri in eccesso</span>
+                  </p>
+                </td> <!-- Quantità da acquistare / rimanenze -->
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </template>
+      <div class="d-flex justify-content-between">
+        <button class="btn btn-secondary" @click="fase--">Indietro</button>
+        <button class="btn btn-success" @click="downloadPDF">Download PDF</button>
+      </div>
+    </div>
+    
+        <!-- Indicatori di Fase con Pallini -->
+        <div class="row justify-content-center my-5">
+      <div class="col-12">
+        <div class="progress-indicator d-flex justify-content-between align-items-center">
+          <div class="step" :class="{ active: fase >= 1 }">
+            <div class="step-circle d-flex justify-content-center align-items-center">
+              <span class="step-number">1</span>
+            </div>
+            <span class="step-label">Persone</span>
+          </div>
+          <div class="step" :class="{ active: fase >= 2 }">
+            <div class="step-circle d-flex justify-content-center align-items-center">
+              <span class="step-number">2</span>
+            </div>
+            <span class="step-label">Quantità</span>
+          </div>
+          <div class="step" :class="{ active: fase >= 3 }">
+            <div class="step-circle d-flex justify-content-center align-items-center">
+              <span class="step-number">3</span>
+            </div>
+            <span class="step-label">Totale</span>
+          </div>
+          <div class="step" :class="{ active: fase >= 4 }">
+            <div class="step-circle d-flex justify-content-center align-items-center">
+              <span class="step-number">4</span>
+            </div>
+            <span class="step-label">Bilancio</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </section>
 </template>
+
 
 
 <script>
@@ -168,335 +199,491 @@ import jsPDF from 'jspdf';
 
 export default {
   name: 'GestioneQuantità',
-  data() {
+  data(){
     return {
-      numberOfPeople: 1,
-      currentStep: 1,
-      mieQuantità: {
-        acqua: {
-          frizzante: { unit: 'litri', value: 0, amountPerBottle: 0, liters: 0, centiliters: 0, milliliters: 0},
-          naturale: { unit: 'litri', value: 0, amountPerBottle: 0, liters: 0, centiliters: 0, milliliters: 0 },
+      bevande : {
+        acquisto: {
+          acqua: {
+            frizzante: {
+              quantita: { litri: 0.25, centilitri: 25, millilitri: 250 },
+              bottiglia: { litri: 1, centilitri: 100, millilitri: 1000 }
+            },
+            naturale: {
+              quantita: { litri: 0.25, centilitri: 25, millilitri: 250 },
+              bottiglia: { litri: 1, centilitri: 100, millilitri: 1000 }
+            }
+          },
+          alcool: {
+            vodka: {
+              quantita: { litri: 0.03, centilitri: 3, millilitri: 30 },
+              bottiglia: { litri: 0.7, centilitri: 70, millilitri: 700 }
+            },
+            rum: {
+              quantita: { litri: 0.02, centilitri: 2, millilitri: 20 },
+              bottiglia: { litri: 0.7, centilitri: 70, millilitri: 700 }
+            }
+          },
+          birra: {
+            paulaner: {
+              quantita: { litri: 0.25, centilitri: 25, millilitri: 250 },
+              bottiglia: { litri: 0.25, centilitri: 25, millilitri: 250 }
+            },
+            heineken: {
+              quantita: { litri: 0.25, centilitri: 25, millilitri: 250 },
+              bottiglia: { litri: 0.25, centilitri: 25, millilitri: 250 }
+            }
+          },
+          analcolici: {
+            coca: {
+              quantita: { litri: 0.3, centilitri: 30, millilitri: 300 },
+              bottiglia: { litri: 1, centilitri: 100, millilitri: 1000 }
+            },
+            fanta: {
+              quantita: { litri: 0.11, centilitri: 11, millilitri: 110 },
+              bottiglia: { litri: 1, centilitri: 100, millilitri: 1000 }
+            },
+            thePesca: {
+              quantita: { litri: 0.07, centilitri: 7, millilitri: 70 },
+              bottiglia: { litri: 1, centilitri: 100, millilitri: 1000 }
+            },
+            theLimone: {
+              quantita: { litri: 0.07, centilitri: 7, millilitri: 70 },
+              bottiglia: { litri: 1, centilitri: 100, millilitri: 1000 }
+            },
+            redbull: {
+              quantita: { litri: 0.05, centilitri: 5, millilitri: 50 },
+              bottiglia: { litri: 0.25, centilitri: 25, millilitri: 250 }
+            }
+          },
+          shots: {
+            montenegro: {
+              quantita: { litri: 0.0375, centilitri: 3.75, millilitri: 37.5 },
+              bottiglia: { litri: 0.7, centilitri: 70, millilitri: 700 }
+            },
+            jeger: {
+              quantita: { litri: 0.0375, centilitri: 3.75, millilitri: 37.5 },
+              bottiglia: { litri: 0.7, centilitri: 70, millilitri: 700 }
+            },
+            limoncino: {
+              quantita: { litri: 0.0375, centilitri: 3.75, millilitri: 37.5 },
+              bottiglia: { litri: 0.7, centilitri: 70, millilitri: 700 }
+            },
+            vodkaZucc: {
+              quantita: { litri: 0.0375, centilitri: 3.75, millilitri: 37.5 },
+              bottiglia: { litri: 0.7, centilitri: 70, millilitri: 700 }
+            }
+          },
+          drink: {
+            rum: {
+              quantita: { litri: 0.02, centilitri: 2, millilitri: 20 },
+              bottiglia: { litri: 0.7, centilitri: 70, millilitri: 700 }
+            },
+            gin: {
+              quantita: { litri: 0.05, centilitri: 5, millilitri: 50 },
+              bottiglia: { litri: 0.7, centilitri: 70, millilitri: 700 }
+            },
+            vodka: {
+              quantita: { litri: 0.03, centilitri: 3, millilitri: 30 },
+              bottiglia: { litri: 0.7, centilitri: 70, millilitri: 700 }
+            },
+            tonica: {
+              quantita: { litri: 0.06, centilitri: 6, millilitri: 60 },
+              bottiglia: { litri: 1, centilitri: 100, millilitri: 1000 }
+            },
+            lemonSoda: {
+              quantita: { litri: 0.15, centilitri: 15, millilitri: 150 },
+              bottiglia: { litri: 1, centilitri: 100, millilitri: 1000 }
+            },
+            succoPera: {
+              quantita: { litri: 0.09, centilitri: 9, millilitri: 90 },
+              bottiglia: { litri: 1, centilitri: 100, millilitri: 1000 }
+            }
+          },
+          spritz: {
+            aperol: {
+              quantita: { litri: 0.03, centilitri: 3, millilitri: 30 },
+              bottiglia: { litri: 0.7, centilitri: 70, millilitri: 700 }
+            },
+            prosecco: {
+              quantita: { litri: 0.04, centilitri: 4, millilitri: 40 },
+              bottiglia: { litri: 0.75, centilitri: 75, millilitri: 750 }
+            },
+            soda: {
+              quantita: { litri: 0.02, centilitri: 2, millilitri: 20 },
+              bottiglia: { litri: 1, centilitri: 100, millilitri: 1000 }
+            }
+          }
         },
-        alcool: {
-          vodka: { unit: 'litri', value: 0, amountPerBottle: 0, liters: 0, centiliters: 0, milliliters: 0 },
-          rum: { unit: 'litri', value: 0, amountPerBottle: 0, liters: 0, centiliters: 0, milliliters: 0 },
-        },
-        analcolici: {
-          coca: { unit: 'litri', value: 0, amountPerBottle: 0, liters: 0, centiliters: 0, milliliters: 0 },
-          fanta: { unit: 'litri', value: 0, amountPerBottle: 0, liters: 0, centiliters: 0, milliliters: 0 },
-          thePesca: { unit: 'litri', value: 0, amountPerBottle: 0, liters: 0, centiliters: 0, milliliters: 0 },
-          theLimone: { unit: 'litri', value: 0, amountPerBottle: 0, liters: 0, centiliters: 0, milliliters: 0 },
-          redbull: { unit: 'litri', value: 0, amountPerBottle: 0, liters: 0, centiliters: 0, milliliters: 0 },
-        },
-        shots: {
-          montenegro: { unit: 'litri', value: 0, amountPerBottle: 0, liters: 0, centiliters: 0, milliliters: 0 },
-          jeger: { unit: 'litri', value: 0, amountPerBottle: 0, liters: 0, centiliters: 0, milliliters: 0 },
-          limoncino: { unit: 'litri', value: 0, amountPerBottle: 0, liters: 0, centiliters: 0, milliliters: 0 },
-          vodkaZucc: { unit: 'litri', value: 0, amountPerBottle: 0, liters: 0, centiliters: 0, milliliters: 0 },
-        },
-        drink: {
-          rum: { unit: 'litri', value: 0, amountPerBottle: 0, liters: 0, centiliters: 0, milliliters: 0 },
-          gin: { unit: 'litri', value: 0, amountPerBottle: 0, liters: 0, centiliters: 0, milliliters: 0 },
-          vodka: { unit: 'litri', value: 0, amountPerBottle: 0, liters: 0, centiliters: 0, milliliters: 0 },
-          tonica: { unit: 'litri', value: 0, amountPerBottle: 0, liters: 0, centiliters: 0, milliliters: 0 },
-          lemonSoda: { unit: 'litri', value: 0, amountPerBottle: 0, liters: 0, centiliters: 0, milliliters: 0 },
-          succoPera: { unit: 'litri', value: 0, amountPerBottle: 0, liters: 0, centiliters: 0, milliliters: 0 },
-        },
-        spritz: {
-          aperol: { unit: 'litri', value: 0, amountPerBottle: 0, liters: 0, centiliters: 0, milliliters: 0 },
-          prosecco: { unit: 'litri', value: 0, amountPerBottle: 0, liters: 0, centiliters: 0, milliliters: 0 },
-          soda: { unit: 'litri', value: 0, amountPerBottle: 0, liters: 0, centiliters: 0, milliliters: 0 },
-        },
-      },
-      categories: {
-        acqua: {
-          frizzante: { amountPerPerson: 0.25, amountPerBottle: 1, liters: 0, centiliters: 0, milliliters: 0, unit: 'litri', value: 0 },
-          naturale: { amountPerPerson: 0.25, amountPerBottle: 1, liters: 0, centiliters: 0, milliliters: 0, unit: 'litri', value: 0 },
-          totale: { amountPerPerson: 0.5, amountPerBottle: 1, liters: 0, centiliters: 0, milliliters: 0, unit: 'litri', value: 0}
-        },
-        birra: {
-          paulaner: { amountPerPerson: 0.25, amountPerBottle: 0.25, liters: 0, centiliters: 0, milliliters: 0, unit: 'litri', value: 0 },
-          heineken: { amountPerPerson: 0.25, amountPerBottle: 0.25, liters: 0, centiliters: 0, milliliters: 0, unit: 'litri', value: 0 },
-          totale: { amountPerPerson: 0.5, amountPerBottle: 1, liters: 0, centiliters: 0, milliliters: 0, unit: 'litri', value: 0 },
-        },
-        analcolici: {
-          coca: { amountPerPerson: 0.3, liters: 0, centiliters: 0, milliliters: 0, unit: 'litri', value: 0},
-          fanta: { amountPerPerson: 0.11, liters: 0, centiliters: 0, milliliters: 0, unit: 'litri', value: 0},
-          thePesca: { amountPerPerson: 0.07, liters: 0, centiliters: 0, milliliters: 0, unit: 'litri', value: 0},
-          theLimone: { amountPerPerson: 0.07, liters: 0, centiliters: 0, milliliters: 0, unit: 'litri', value: 0},
-          redbull: { amountPerPerson: 0.05, amountPerBottle: 0.25, liters: 0, centiliters: 0, milliliters: 0, unit: 'litri', value: 0 },
-          totale: { amountPerPerson: 0.60, amountPerBottle: 1, liters: 0, centiliters: 0, milliliters: 0, unit: 'litri', value: 0 }
-        },
-        shots: {
-          montenegro: { amountPerPerson: 0.0375, amountPerBottle: 0.7, liters: 0, centiliters: 0, milliliters: 0, unit: 'litri', value: 0 },
-          jeger: { amountPerPerson: 0.0375, amountPerBottle: 0.7, liters: 0, centiliters: 0, milliliters: 0, unit: 'litri', value: 0 },
-          limoncino: { amountPerPerson: 0.0375, amountPerBottle: 0.7, liters: 0, centiliters: 0, milliliters: 0, unit: 'litri', value: 0 },
-          vodkaZucc: { amountPerPerson: 0.0375, amountPerBottle: 0.7, liters: 0, centiliters: 0, milliliters: 0, unit: 'litri', value: 0 },
-          totale: { amountPerPerson: 0.15, amountPerBottle: 0.7, liters: 0, centiliters: 0, milliliters: 0, unit: 'litri', value: 0 }
-        },
-        drink: {
-          rum: { amountPerPerson: 0.02, amountPerBottle: 0.7, liters: 0, centiliters: 0, milliliters: 0, unit: 'litri', value: 0 },
-          gin: { amountPerPerson: 0.05, amountPerBottle: 0.7, liters: 0, centiliters: 0, milliliters: 0, unit: 'litri', value: 0 },
-          vodka: { amountPerPerson: 0.03, amountPerBottle: 0.7, liters: 0, centiliters: 0, milliliters: 0, unit: 'litri', value: 0 },
-          tonica: { amountPerPerson: 0.06, amountPerBottle: 1, liters: 0, centiliters: 0, milliliters: 0, unit: 'litri', value: 0},
-          lemonSoda: { amountPerPerson: 0.15, amountPerBottle: 1, liters: 0, centiliters: 0, milliliters: 0, unit: 'litri', value: 0 },
-          succoPera: { amountPerPerson: 0.09, amountPerBottle: 1, liters: 0, centiliters: 0, milliliters: 0, unit: 'litri', value: 0 },
-          totale: { amountPerPerson: '', amountPerBottle: '', liters: 0, centiliters: 0, milliliters: 0, unit: 'litri', value: 0 },
-        },
-        spritz: {
-          aperol: { amountPerPerson: 0.03, amountPerBottle: 0.7, liters: 0, centiliters: 0, milliliters: 0, unit: 'litri', value: 0 },
-          prosecco: { amountPerPerson: 0.04, amountPerBottle: 0.75, liters: 0, centiliters: 0, milliliters: 0, unit: 'litri', value: 0},
-          soda: { amountPerPerson: 0.02, amountPerBottle: 1, liters: 0, centiliters: 0, milliliters: 0, unit: 'litri', value: 0},
-          totale: { amountPerPerson: '', amountPerBottle: '', liters: 0, centiliters: 0, milliliters: 0, unit: 'litri', value: 0  }
+        rimanenze: {
+          acqua: {
+            frizzante: {
+              quantita: { litri: 0, centilitri: 0, millilitri: 0 },
+              bottiglia: { litri: 1, centilitri: 100, millilitri: 1000 }
+            },
+            naturale: {
+              quantita: { litri: 0, centilitri: 0, millilitri: 0 },
+              bottiglia: { litri: 1, centilitri: 100, millilitri: 1000 }
+            }
+          },
+          alcool: {
+            vodka: {
+              quantita: { litri: 0, centilitri: 0, millilitri: 0 },
+              bottiglia: { litri: 0.7, centilitri: 70, millilitri: 700 }
+            },
+            rum: {
+              quantita: { litri: 0, centilitri: 0, millilitri: 0 },
+              bottiglia: { litri: 0.7, centilitri: 70, millilitri: 700 }
+            }
+          },
+          birra: {
+            paulaner: {
+              quantita: { litri: 0, centilitri: 0, millilitri: 0 },
+              bottiglia: { litri: 0.25, centilitri: 25, millilitri: 250 }
+            },
+            heineken: {
+              quantita: { litri: 0, centilitri: 0, millilitri: 0 },
+              bottiglia: { litri: 0.25, centilitri: 25, millilitri: 250 }
+            }
+          },
+          analcolici: {
+            coca: {
+              quantita: { litri: 0, centilitri: 0, millilitri: 0 },
+              bottiglia: { litri: 1, centilitri: 100, millilitri: 1000 }
+            },
+            fanta: {
+              quantita: { litri: 0, centilitri: 0, millilitri: 0 },
+              bottiglia: { litri: 1, centilitri: 100, millilitri: 1000 }
+            },
+            thePesca: {
+              quantita: { litri: 0, centilitri: 0, millilitri: 0 },
+              bottiglia: { litri: 1, centilitri: 100, millilitri: 1000 }
+            },
+            theLimone: {
+              quantita: { litri: 0, centilitri: 0, millilitri: 0 },
+              bottiglia: { litri: 1, centilitri: 100, millilitri: 1000 }
+            },
+            redbull: {
+              quantita: { litri: 0, centilitri: 0, millilitri: 0 },
+              bottiglia: { litri: 0.25, centilitri: 25, millilitri: 250 }
+            }
+          },
+          shots: {
+            montenegro: {
+              quantita: { litri: 0, centilitri: 0, millilitri: 0 },
+              bottiglia: { litri: 0.7, centilitri: 70, millilitri: 700 }
+            },
+            jeger: {
+              quantita: { litri: 0, centilitri: 0, millilitri: 0 },
+              bottiglia: { litri: 0.7, centilitri: 70, millilitri: 700 }
+            },
+            limoncino: {
+              quantita: { litri: 0, centilitri: 0, millilitri: 0 },
+              bottiglia: { litri: 0.7, centilitri: 70, millilitri: 700 }
+            },
+            vodkaZucc: {
+              quantita: { litri: 0, centilitri: 0, millilitri: 0 },
+              bottiglia: { litri: 0.7, centilitri: 70, millilitri: 700 }
+            }
+          },
+          drink: {
+            rum: {
+              quantita: { litri: 0, centilitri: 0, millilitri: 0 },
+              bottiglia: { litri: 0.7, centilitri: 70, millilitri: 700 }
+            },
+            gin: {
+              quantita: { litri: 0, centilitri: 0, millilitri: 0 },
+              bottiglia: { litri: 0.7, centilitri: 70, millilitri: 700 }
+            },
+            vodka: {
+              quantita: { litri: 0, centilitri: 0, millilitri: 0 },
+              bottiglia: { litri: 0.7, centilitri: 70, millilitri: 700 }
+            },
+            tonica: {
+              quantita: { litri: 0, centilitri: 0, millilitri: 0 },
+              bottiglia: { litri: 1, centilitri: 100, millilitri: 1000 }
+            },
+            lemonSoda: {
+              quantita: { litri: 0, centilitri: 0, millilitri: 0 },
+              bottiglia: { litri: 1, centilitri: 100, millilitri: 1000 }
+            },
+            succoPera: {
+              quantita: { litri: 0, centilitri: 0, millilitri: 0 },
+              bottiglia: { litri: 1, centilitri: 100, millilitri: 1000 }
+            }
+          },
+          spritz: {
+            aperol: {
+              quantita: { litri: 0, centilitri: 0, millilitri: 0 },
+              bottiglia: { litri: 0.7, centilitri: 70, millilitri: 700 }
+            },
+            prosecco: {
+              quantita: { litri: 0, centilitri: 0, millilitri: 0 },
+              bottiglia: { litri: 0.75, centilitri: 75, millilitri: 750 }
+            },
+            soda: {
+              quantita: { litri: 0, centilitri: 0, millilitri: 0 },
+              bottiglia: { litri: 1, centilitri: 100, millilitri: 1000 }
+            }
+          },
         }
       },
-      intestazioniTabelle: {
-        inserisciQuantità: ["Dettaglio", "Bottiglie", "Litri", "Centilitri", "Millilitri"],
-        festaQuantità: ["Dettaglio", "Totale Bottiglie", "Litri", "Centilitri", "Millilitri"],
-        Bilancio: ["Dettaglio", "Quantità da Acquistare", "Quantità Avanzata"],
-      }
-    };
-  },
-  methods: { 
-    prosegui() {
-    if (this.numberOfPeople > 0) {
-      if (this.currentStep === 1) {
-        this.currentStep = 2;
-      } else if (this.currentStep === 2) {
-        this.currentStep = 3;
-      } else if (this.currentStep === 3) {
-        this.currentStep = 4; 
-      }
-    } else {
-      alert("Per favore, inserisci un numero di persone valido.");
+      numeroPersone: 1,
+      fase:1,
     }
   },
-    goBack() {
-      if (this.currentStep > 1) {
-        this.currentStep--;
+  methods: {
+    proseguiFase2() {
+      if (this.numeroPersone > 0) {
+        for (let categoria in this.bevande.rimanenze) {
+          for (let nomeBevanda in this.bevande.rimanenze[categoria]) {
+            let drink = this.bevande.rimanenze[categoria][nomeBevanda];
+            this.AggiungiQuantita(drink, 'litri');
+            this.AggiungiQuantita(drink, 'centilitri');
+            this.AggiungiQuantita(drink, 'millilitri');
+          }
+        } 
+        this.fase = 2;
       }
     },
-    handleInput(event, categoryName, itemName, unit) {
-      const value = parseFloat(event.target.value) || 0;
-      this.updateQuantities(value, categoryName, itemName, unit);
+    vaiAFase3() {
+      this.calcoloBottiglieNecessarie();
+      this.fase = 3;
     },
-    updateQuantities(value, categoryName, itemName, unit) {
-      let liters, centiliters, milliliters;
-      const conversion = { 'bottiglie': 1, 'litri': 1, 'centilitri': 100, 'millilitri': 1000 };
-      
-      liters = centiliters = milliliters = value;
+    vaiAFase4() {
+      this.acquistoDefinitivo();
+      this.fase = 4;
+    },
+    AggiungiQuantita(drink, unit) {
+      let totalLitri = 0;
 
-      if (unit === 'bottiglie') {
-        liters = value;
-        centiliters = liters * 100;
-        milliliters = liters * 1000;
-      } else if (unit === 'litri') {
-        centiliters = value * 100;
-        milliliters = value * 1000;
+      if (unit === 'litri') {
+        totalLitri = drink.quantita.litri;
       } else if (unit === 'centilitri') {
-        liters = value / 100;
-        milliliters = value * 10;
+        totalLitri = drink.quantita.centilitri / 100;
       } else if (unit === 'millilitri') {
-        liters = value / 1000;
-        centiliters = value / 10;
+        totalLitri = drink.quantita.millilitri / 1000;
       }
 
-      if (this.mieQuantità[categoryName] && this.mieQuantità[categoryName][itemName]) {
-        this.mieQuantità[categoryName][itemName].liters = liters;
-        this.mieQuantità[categoryName][itemName].centiliters = centiliters;
-        this.mieQuantità[categoryName][itemName].milliliters = milliliters;
+      if (totalLitri >= 0) {
+        drink.quantita.litri = totalLitri;
+        drink.quantita.centilitri = totalLitri * 100;
+        drink.quantita.millilitri = totalLitri * 1000;
+
+        let capacitaBottiglia = drink.bottiglia.litri;
+        let numBottiglie = totalLitri / capacitaBottiglia;
+
+        drink.bottiglie = parseFloat(numBottiglie.toFixed(2));
       }
     },
-    calculateBottles(liters) {
-      return Math.ceil(liters); 
-    },
+    calcoloBottiglieNecessarie() {
+      for (let categoria in this.bevande.acquisto) {
+        for (let nomeBevanda in this.bevande.acquisto[categoria]) {
+          let bevanda = this.bevande.acquisto[categoria][nomeBevanda];
 
-    calculateTotal(category, item) {
-      const data = this.categories[category][item];
-      const totalAmount = data.amountPerPerson * this.numberOfPeople;
-      const totalBottles = Math.ceil(totalAmount / data.amountPerBottle);
-      const totalLiters = totalAmount;
-      const totalCentiliters = totalAmount * 100;
-      const totalMilliliters = totalAmount * 1000;
+          let nuoviLitri = bevanda.quantita.litri * this.numeroPersone;
+          let nuoviCentilitri = nuoviLitri * 100;
+          let nuoviMillilitri = nuoviLitri * 1000;
 
-      return {
-        totale: totalAmount.toFixed(2),
-        bottles: totalBottles,
-        liters: totalLiters.toFixed(3),
-        centiliters: totalCentiliters.toFixed(0),
-        milliliters: totalMilliliters.toFixed(0)
-      };
-    },
-    convertUnit(value, unit) {
-      const conversion = { 'bottiglie': 1, 'litri': 1, 'centilitri': 100, 'millilitri': 1000 };
-      let liters, centiliters, milliliters;
-      if (unit === 'bottiglie') {
-        liters = value;
-        centiliters = liters * 100;
-        milliliters = liters * 1000;
-      } else if (unit === 'litri') {
-        liters = value;
-        centiliters = value * 100;
-        milliliters = value * 1000;
-      } else if (unit === 'centilitri') {
-        liters = value / 100;
-        centiliters = value;
-        milliliters = value * 10;
-      } else if (unit === 'millilitri') {
-        liters = value / 1000;
-        centiliters = value / 10;
-        milliliters = value;
-      }
-      return { liters, centiliters, milliliters };
-    },
+          bevanda.quantita.litri = +nuoviLitri.toFixed(2);
+          bevanda.quantita.centilitri = +nuoviCentilitri.toFixed(2);
+          bevanda.quantita.millilitri = +nuoviMillilitri.toFixed(2);
 
-    calculateDifference(categoryName, itemName) {
-      const category = this.categories[categoryName];
-      const item = category[itemName];
+          let capacitaBottiglia = bevanda.bottiglia.litri;
+          let bottiglieNecessarie = nuoviLitri / capacitaBottiglia;
 
-      const totalToBuy = this.calculateTotal(categoryName, itemName).liters || 0;
-      const totalLeft = this.mieQuantità[categoryName] && this.mieQuantità[categoryName][itemName]
-        ? this.mieQuantità[categoryName][itemName].liters || 0
-        : 0;
-
-      let acquisto = totalToBuy - totalLeft;
-      let rimanenza = totalLeft;
-
-      if (rimanenza > acquisto) {
-        acquisto = 0;
-        rimanenza = rimanenza - totalToBuy; // la differenza diventa la rimanenza
-      }
-
-      // Se l'acquisto è maggiore della rimanenza, scalare l'acquisto e impostare la rimanenza a 0
-      if (acquisto > rimanenza) {
-        acquisto = rimanenza;  // Acquisto è ridotto al livello della rimanenza
-        rimanenza = 0;  // La rimanenza diventa 0
-      } else {
-        // Se l'acquisto è minore della rimanenza, l'acquisto può essere utilizzato per compensare la rimanenza
-        rimanenza = rimanenza - acquisto;
-      }
-
-      const convertToUnits = (amountInLiters) => {
-        // Se amountInLiters è NaN o inferiore a 0, restituisci valori a 0
-        if (isNaN(amountInLiters) || amountInLiters < 0) {
-          return {
-            liters: '0 L',
-            milliliters: '0 mL',
-            centiliters: '0 cL',
-            bottles: '0 Bottiglie',
-          };
+          bevanda.bottiglie = parseFloat(bottiglieNecessarie.toFixed(2));
         }
-
-        const liters = amountInLiters;
-        const milliliters = liters * 1000;
-        const centiliters = liters * 100;
-        const bottles = liters / item.bottleCapacity;
-
-        // Limita il numero di decimali a 3 per litri e bottiglie, senza decimali per millilitri e centilitri
-        return {
-          liters: `${liters.toFixed(3)} L`,
-          milliliters: `${milliliters.toFixed(0)} mL`,
-          centiliters: `${centiliters.toFixed(0)} cL`,
-          bottles: `${bottles.toFixed(3)} Bottiglie`,
-        };
-      };
-
-      return {
-        acquisto: convertToUnits(acquisto),
-        rimanenza: convertToUnits(rimanenza),
-      };
+      }
     },
+    acquistoDefinitivo() {
+      for (let categoria in this.bevande.acquisto) {
+        for (let nomeBevanda in this.bevande.acquisto[categoria]) {
+          let drink = this.bevande.acquisto[categoria][nomeBevanda];
+          let rimanenza = this.bevande.rimanenze[categoria][nomeBevanda].quantita.litri;
 
-    finalize() {
-      const doc = new jsPDF();
-      doc.text("Quantità da acquistare", 10, 10);
-      doc.save("quantità.pdf");
+          let necessaria = drink.quantita.litri * this.numeroPersone;
+          let differenza = necessaria - rimanenza;
+
+          let bottiglieNecessarie = 0;
+          if (differenza > 0) {
+            bottiglieNecessarie = differenza / drink.bottiglia.litri;
+          }
+
+          let millilitri = necessaria * 1000;
+          let centilitri = necessaria * 100;
+
+          drink.quantitaNecessaria = necessaria;
+          drink.rimanenzaDisponibile = rimanenza;
+          drink.bottiglieNecessarie = bottiglieNecessarie > 0 ? bottiglieNecessarie : 0;
+          drink.millilitriNecessari = millilitri;
+          drink.centilitriNecessari = centilitri;
+          drink.differenza = differenza;
+
+          let rimanenzaMillilitri = rimanenza * 1000;
+          let rimanenzaCentilitri = rimanenza * 100;
+          let rimanenzaBottiglie = rimanenza / drink.bottiglia.litri;
+
+          drink.rimanenzaMillilitri = rimanenzaMillilitri;
+          drink.rimanenzaCentilitri = rimanenzaCentilitri;
+          drink.rimanenzaBottiglie = rimanenzaBottiglie;
+        }
+      }
+    },
+    downloadPDF() {
+  const doc = new jsPDF();
+  const phaseData = [];
+
+  // Raccogliamo i dati dalla fase 4
+  for (let categoryName in this.bevande.acquisto) {
+    let category = this.bevande.acquisto[categoryName];
+    let drinks = [];
+
+    for (let drinkName in category) {
+      let drink = category[drinkName];
+
+      drinks.push({
+        name: drinkName,
+        quantitaNecessaria: drink.quantitaNecessaria,
+        rimanenzaDisponibile: drink.rimanenzaDisponibile,
+        millilitriNecessari: drink.millilitriNecessari,
+        centilitriNecessari: drink.centilitriNecessari,
+        bottiglieNecessarie: drink.bottiglieNecessarie,
+        rimanenzaMillilitri: drink.rimanenzaMillilitri,
+        rimanenzaCentilitri: drink.rimanenzaCentilitri,
+        rimanenzaBottiglie: drink.rimanenzaBottiglie
+      });
     }
+
+    phaseData.push({ category: categoryName, drinks });
   }
-};
+
+  // Aggiungi la data del giorno corrente
+  const today = new Date();
+  const dateStr = `${today.getDate().toString().padStart(2, '0')}/${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getFullYear()}`;
+
+  // Aggiungi il titolo e i dettagli iniziali
+  doc.setFontSize(16);
+  doc.text('BERE PER FESTA', 20, 20);
+  doc.setFontSize(12);
+  doc.text(`NUMERO PERSONE: ${this.numeroPersone}`, 20, 30);
+  doc.text(`DATA: ${dateStr}`, 160, 30);
+
+  let yOffset = 40; // Posizione iniziale per i dati
+
+  // Itera sulle categorie e bevande per aggiungere i dettagli al PDF
+  phaseData.forEach(item => {
+    // Categoria
+    doc.text(item.category, 20, yOffset);
+    yOffset += 5; // Aggiungi un po' di spazio tra le categorie
+
+    // Intestazione della tabella sotto ogni categoria
+    doc.text('NOME', 20, yOffset);
+    doc.text('ACQ.', 50, yOffset);
+    doc.text('NS. QUANT.', 90, yOffset);
+    doc.text('DA COMPRARE / RIAMANENZA', 140, yOffset);
+    yOffset += 10;
+
+    // Dettagli per ciascuna bevanda
+    item.drinks.forEach(drink => {
+      // Dettagli della bevanda
+      doc.text(drink.name, 20, yOffset);
+
+      // Quantità necessarie (con le varie unità di misura)
+      doc.text(`${drink.quantitaNecessaria.toFixed(2)} l`, 50, yOffset + 10);
+      doc.text(`${drink.millilitriNecessari} ml`, 90, yOffset + 10);
+      doc.text(`${drink.centilitriNecessari} cl`, 130, yOffset + 10);
+      doc.text(`${drink.bottiglieNecessarie.toFixed(2)} bott`, 170, yOffset + 10);
+
+      // Quantità rimanenti (con le varie unità di misura)
+      doc.text(`${drink.rimanenzaDisponibile.toFixed(2)} l`, 220, yOffset + 10);
+      doc.text(`${drink.rimanenzaMillilitri} ml`, 260, yOffset + 10);
+      doc.text(`${drink.rimanenzaCentilitri} cl`, 300, yOffset + 10);
+      doc.text(`${drink.rimanenzaBottiglie.toFixed(2)} bott`, 340, yOffset + 10);
+
+      // Quantità da comprare / in eccesso
+      if (drink.quantitaNecessaria > drink.rimanenzaDisponibile) {
+        doc.text(`${(drink.quantitaNecessaria - drink.rimanenzaDisponibile).toFixed(2)} l`, 380, yOffset + 10);
+        doc.text(`${(drink.millilitriNecessari - drink.rimanenzaMillilitri).toFixed(0)} ml`, 420, yOffset + 10);
+        doc.text(`${(drink.centilitriNecessari - drink.rimanenzaCentilitri).toFixed(0)} cl`, 460, yOffset + 10);
+        doc.text(`${(drink.bottiglieNecessarie - drink.rimanenzaBottiglie).toFixed(2)} bott`, 500, yOffset + 10);
+      } else {
+        doc.text(`${(drink.rimanenzaDisponibile - drink.quantitaNecessaria).toFixed(2)} l`, 380, yOffset + 10);
+        doc.text(`${(drink.rimanenzaMillilitri - drink.millilitriNecessari).toFixed(0)} ml`, 420, yOffset + 10);
+        doc.text(`${(drink.rimanenzaCentilitri - drink.centilitriNecessari).toFixed(0)} cl`, 460, yOffset + 10);
+        doc.text(`${(drink.rimanenzaBottiglie - drink.bottiglieNecessarie).toFixed(2)} bott`, 500, yOffset + 10);
+      }
+
+      yOffset += 20; // Aggiungi spazio tra le righe di dati
+
+      // Aggiungi una nuova pagina se necessario
+      if (yOffset > 270) {
+        doc.addPage();
+        yOffset = 20; // Reset della posizione verticale per una nuova pagina
+
+        // Ripetere l'intestazione della tabella
+        doc.text('NOME', 20, yOffset);
+        doc.text('ACQ.', 50, yOffset);
+        doc.text('NS. QUANT.', 90, yOffset);
+        doc.text('DA COMPRARE / RIAMANENZA', 140, yOffset);
+        yOffset += 10; // Spostarsi alla riga successiva
+      }
+    });
+  });
+
+  // Salva il PDF
+  doc.save('bere_per_festa.pdf');
+}
+}
+}
+
 </script>
 
 <style scoped>
-.progress-indicator {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 30px;
+.progress-indicator .step {
+  text-align: center;
+  position: relative;
 }
 
-.step {
-  position: relative;
-  text-align: center;
-  flex: 1;
-  transition: all 0.3s ease;
+.step-circle {
+  width: 40px;
+  height: 40px;
+  background-color: #e0e0e0;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.step.active .step-circle {
+  background-color: #007bff;
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
 }
 
 .step-number {
-  display: block;
-  width: 40px;
-  height: 40px;
-  margin: 0 auto;
-  background-color: #ccc;
-  border-radius: 50%;
-  line-height: 40px;
-  font-size: 16px;
   color: white;
-}
-
-.step-label {
-  margin-top: 5px;
-  font-size: 14px;
-}
-
-.step.active .step-number {
-  background-color: #007bff;
-}
-
-.step.active .step-label {
-  color: #007bff;
-}
-
-/* Stile per le tabelle */
-.custom-table th, .custom-table td {
-  text-align: center;
-  vertical-align: middle;
-}
-
-.custom-table th {
-  background-color: #f8f9fa;
   font-weight: bold;
 }
 
-.custom-table input {
-  width: 100%;
+.step-label {
+  font-size: 12px;
+  margin-top: 5px;
 }
 
-/* Stile del titolo */
-.step-title {
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 20px;
-}
-
-.category-title {
-  font-size: 18px;
-  margin-bottom: 15px;
-  color: #333;
-}
-
-button {
-  width: 48%;
-}
-
-@media (max-width: 767px) {
-  .step-number {
-    font-size: 14px;
-    width: 30px;
-    height: 30px;
-    line-height: 30px;
+@media (max-width: 768px) {
+  .progress-indicator {
+    flex-direction: column;
+    align-items: center;
   }
 
-  .step-label {
-    font-size: 12px;
+  .step {
+    margin-bottom: 20px;
+  }
+
+  .step-circle {
+    width: 50px;
+    height: 50px;
   }
 }
 </style>

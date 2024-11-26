@@ -1,13 +1,20 @@
 <script>
+import NeveHeader from '../assets/images/Header/Neve-Header.jpg';
+
 export default {
     name: 'Jumbotron',
+    data() { 
+        return { 
+            NeveHeader 
+        }; 
+    }
 };
 </script>
 
 <template>
     <section id="jumbotron">
         <div class="container-fluid">
-            <img class="jumbotron-img" src="https://www.arcidiocesigaeta.it/wp-content/uploads/sites/2/2024/02/05/festa-giovani-coriandoli-musica-concerto.jpg" alt="Dracarys">
+            <img class="jumbotron-img" :src="NeveHeader" alt="Dracarys">
         </div>
     </section>
 </template>
