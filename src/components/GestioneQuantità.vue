@@ -1,199 +1,3 @@
-<template>
-  <section id="calcoloBottiglie" class="container my-5">
-
-    <!-- Fase 1 - Numero persone -->
-    <div v-if="fase === 1" class="mt-4" >
-      <h2 class="text-center m-5">Numero di persone</h2>
-      <div class="d-flex justify-content-between align-items-center ">
-        <div class="form-group d-flex">
-          <label for="numeroPersone">Quante persone parteciperanno alla festa?</label>
-          <input type="number" id="numeroPersone" v-model="numeroPersone" class="form-control" placeholder="Inserisci il numero di persone" min="1"/>
-        </div>
-        <div class="text-center">
-          <button class="btn btn-danger mt-3" @click="proseguiFase2" :disabled="numeroPersone <= 0">Conferma</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Fase 2 - Mie Quantità -->
-    <div v-if="fase === 2" class="mt-4">
-      <h2 class="text-center">Quantità Disponibili</h2>
-      <template v-for="(category, categoryName) in bevande.rimanenze" :key="categoryName">
-        <h3 class="mt-3">{{ categoryName }}</h3>
-        <table class="table table-bordered table-hover">
-          <thead>
-            <tr>
-              <th>Dettaglio</th>
-              <th>Bottiglie</th>
-              <th>Litri</th>
-              <th>Centilitri</th>
-              <th>Millilitri</th>
-            </tr>
-          </thead>
-          <tbody>
-            <template v-for="(drink, drinkName) in category" :key="drinkName">
-              <tr>
-                <td>{{ drinkName }}</td>
-                <td>{{ drink.bottiglie }}</td>
-                <td>
-                  <input type="number" v-model="drink.quantita.litri" class="form-control" min="0" @input="AggiungiQuantita(drink, 'litri')" placeholder="Litri" />
-                </td>
-                <td>
-                  <input type="number" v-model="drink.quantita.centilitri" class="form-control" min="0" @input="AggiungiQuantita(drink, 'centilitri')" placeholder="Centilitri" />
-                </td>
-                <td>
-                  <input type="number" v-model="drink.quantita.millilitri" class="form-control" min="0" @input="AggiungiQuantita(drink, 'millilitri')" placeholder="Millilitri" />
-                </td>
-              </tr>
-            </template>
-          </tbody>
-        </table>
-      </template>
-      <div class="d-flex justify-content-between">
-        <button class="btn btn-secondary" @click="fase--">Indietro</button>
-        <button class="btn btn-danger" @click="vaiAFase3">Avanti</button>
-      </div>
-    </div>
-
-    <!-- Fase 3 - Quantità necessarie -->
-    <div v-if="fase === 3" class="mt-4">
-      <h2 class="text-center">Quantità Necessarie</h2>
-      <template v-for="(category, categoryName) in bevande.acquisto" :key="categoryName">
-        <h3 class="mt-3">{{ categoryName }}</h3>
-        <table class="table table-bordered table-hover">
-          <thead>
-            <tr>
-              <th>Dettaglio</th>
-              <th>Bottiglie necessarie</th>
-              <th>Litri</th>
-              <th>Centilitri</th>
-              <th>Millilitri</th>
-            </tr>
-          </thead>
-          <tbody>
-            <template v-for="(drink, drinkName) in category" :key="drinkName">
-              <tr>
-                <td>{{ drinkName }}</td>
-                <td>{{ drink.bottiglie }}</td> 
-                <td>{{ drink.quantita.litri }}</td>
-                <td>{{ drink.quantita.centilitri }}</td>
-                <td>{{ drink.quantita.millilitri }}</td>
-              </tr>
-            </template>
-          </tbody>
-        </table>
-      </template>
-      <div class="d-flex justify-content-between">
-        <button class="btn btn-secondary" @click="fase--">Indietro</button>
-        <button class="btn btn-danger" @click="vaiAFase4">Avanti</button>
-      </div>
-    </div>
-
-    <!-- Fase 4 - Acquisto definitivo -->
-    <div v-if="fase === 4" class="mt-4">
-      <div class="d-flex justify-content-between">
-        <h2>Acquisto Definitivo</h2>
-        <h2>Persone: {{ numeroPersone }}</h2>
-      </div>
-      <template v-for="(category, categoryName) in bevande.acquisto" :key="categoryName">
-        <h3 class="mt-3">{{ categoryName }}</h3>
-        <table class="table table-bordered table-hover">
-          <thead>
-            <tr>
-              <th>Dettaglio</th>
-              <th>Quantità da acquistare</th>
-              <th>Nostra Quantità</th>
-              <th>Quantità da comprare / Rimanenze</th>
-            </tr>
-          </thead>
-          <tbody>
-            <template v-for="(drink, drinkName) in category" :key="drinkName">
-              <tr>
-                <td>{{ drinkName }}</td>
-                <td>
-                  <p>
-                    <span>{{ drink.quantitaNecessaria.toFixed(2) }} l</span>
-                    <br />
-                    <span v-if="drink.millilitriNecessari !== 0">{{ drink.millilitriNecessari.toFixed(0) }} ml</span>
-                    <br />
-                    <span v-if="drink.centilitriNecessari !== 0">{{ drink.centilitriNecessari.toFixed(0) }} cl</span>
-                    <br />
-                    <span v-if="drink.bottiglieNecessarie !== 0">{{ drink.bottiglieNecessarie.toFixed(2) }} bottiglie</span>
-                  </p>
-                </td> 
-                <td>
-                  <p>
-                    <span>{{ drink.rimanenzaDisponibile.toFixed(2) }} l</span>
-                    <br />
-                    <span>{{ drink.rimanenzaMillilitri.toFixed(0) }} ml</span>
-                    <br />
-                    <span>{{ drink.rimanenzaCentilitri.toFixed(0) }} cl</span>
-                    <br />
-                    <span>{{ drink.rimanenzaBottiglie.toFixed(2) }} bottiglie</span>
-                  </p>
-                </td>
-                <td>
-                  <p v-if="drink.quantitaNecessaria > drink.rimanenzaDisponibile">
-                    <span>{{ (drink.quantitaNecessaria - drink.rimanenzaDisponibile).toFixed(2) }} litri da comprare</span>
-                    <br />
-                    <span>{{ (drink.millilitriNecessari - drink.rimanenzaMillilitri).toFixed(0) }} ml da comprare</span>
-                    <br />
-                    <span>{{ (drink.centilitriNecessari - drink.rimanenzaCentilitri).toFixed(0) }} cl da comprare</span>
-                    <br />
-                    <span>{{ (drink.bottiglieNecessarie - drink.rimanenzaBottiglie).toFixed(2) }} bottiglie da comprare</span>
-                  </p>
-                  <p v-else>
-                    <span class="text-success">{{ drink.rimanenzaDisponibile.toFixed(2) }} litri in eccesso</span>
-                  </p>
-                </td> <!-- Quantità da acquistare / rimanenze -->
-              </tr>
-            </template>
-          </tbody>
-        </table>
-      </template>
-      <div class="d-flex justify-content-between">
-        <button class="btn btn-secondary" @click="fase--">Indietro</button>
-        <button class="btn btn-success" @click="downloadPDF">Download PDF</button>
-      </div>
-    </div>
-    
-        <!-- Indicatori di Fase con Pallini -->
-        <div class="row justify-content-center my-5">
-      <div class="col-12">
-        <div class="progress-indicator d-flex justify-content-between align-items-center">
-          <div class="step" :class="{ active: fase >= 1 }">
-            <div class="step-circle d-flex justify-content-center align-items-center">
-              <span class="step-number">1</span>
-            </div>
-            <span class="step-label">Persone</span>
-          </div>
-          <div class="step" :class="{ active: fase >= 2 }">
-            <div class="step-circle d-flex justify-content-center align-items-center">
-              <span class="step-number">2</span>
-            </div>
-            <span class="step-label">Quantità</span>
-          </div>
-          <div class="step" :class="{ active: fase >= 3 }">
-            <div class="step-circle d-flex justify-content-center align-items-center">
-              <span class="step-number">3</span>
-            </div>
-            <span class="step-label">Totale</span>
-          </div>
-          <div class="step" :class="{ active: fase >= 4 }">
-            <div class="step-circle d-flex justify-content-center align-items-center">
-              <span class="step-number">4</span>
-            </div>
-            <span class="step-label">Bilancio</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </section>
-</template>
-
-
-
 <script>
 import jsPDF from 'jspdf';
 
@@ -637,6 +441,200 @@ export default {
 }
 
 </script>
+
+<template>
+  <section id="calcoloBottiglie" class="container my-5">
+
+    <!-- Fase 1 - Numero persone -->
+    <div v-if="fase === 1" class="mt-4" >
+      <h2 class="text-center m-5">Numero di persone</h2>
+      <div class="d-flex justify-content-between align-items-center ">
+        <div class="form-group d-flex">
+          <label for="numeroPersone">Quante persone parteciperanno alla festa?</label>
+          <input type="number" id="numeroPersone" v-model="numeroPersone" class="form-control" placeholder="Inserisci il numero di persone" min="1"/>
+        </div>
+        <div class="text-center">
+          <button class="btn btn-danger mt-3" @click="proseguiFase2" :disabled="numeroPersone <= 0">Conferma</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fase 2 - Mie Quantità -->
+    <div v-if="fase === 2" class="mt-4">
+      <h2 class="text-center">Quantità Disponibili</h2>
+      <template v-for="(category, categoryName) in bevande.rimanenze" :key="categoryName">
+        <h3 class="mt-3">{{ categoryName }}</h3>
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th>Dettaglio</th>
+              <th>Bottiglie</th>
+              <th>Litri</th>
+              <th>Centilitri</th>
+              <th>Millilitri</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template v-for="(drink, drinkName) in category" :key="drinkName">
+              <tr>
+                <td>{{ drinkName }}</td>
+                <td>{{ drink.bottiglie }}</td>
+                <td>
+                  <input type="number" v-model="drink.quantita.litri" class="form-control" min="0" @input="AggiungiQuantita(drink, 'litri')" placeholder="Litri" />
+                </td>
+                <td>
+                  <input type="number" v-model="drink.quantita.centilitri" class="form-control" min="0" @input="AggiungiQuantita(drink, 'centilitri')" placeholder="Centilitri" />
+                </td>
+                <td>
+                  <input type="number" v-model="drink.quantita.millilitri" class="form-control" min="0" @input="AggiungiQuantita(drink, 'millilitri')" placeholder="Millilitri" />
+                </td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </template>
+      <div class="d-flex justify-content-between">
+        <button class="btn btn-secondary" @click="fase--">Indietro</button>
+        <button class="btn btn-danger" @click="vaiAFase3">Avanti</button>
+      </div>
+    </div>
+
+    <!-- Fase 3 - Quantità necessarie -->
+    <div v-if="fase === 3" class="mt-4">
+      <h2 class="text-center">Quantità Necessarie</h2>
+      <template v-for="(category, categoryName) in bevande.acquisto" :key="categoryName">
+        <h3 class="mt-3">{{ categoryName }}</h3>
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th>Dettaglio</th>
+              <th>Bottiglie necessarie</th>
+              <th>Litri</th>
+              <th>Centilitri</th>
+              <th>Millilitri</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template v-for="(drink, drinkName) in category" :key="drinkName">
+              <tr>
+                <td>{{ drinkName }}</td>
+                <td>{{ drink.bottiglie }}</td> 
+                <td>{{ drink.quantita.litri }}</td>
+                <td>{{ drink.quantita.centilitri }}</td>
+                <td>{{ drink.quantita.millilitri }}</td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </template>
+      <div class="d-flex justify-content-between">
+        <button class="btn btn-secondary" @click="fase--">Indietro</button>
+        <button class="btn btn-danger" @click="vaiAFase4">Avanti</button>
+      </div>
+    </div>
+
+    <!-- Fase 4 - Acquisto definitivo -->
+    <div v-if="fase === 4" class="mt-4">
+      <div class="d-flex justify-content-between">
+        <h2>Acquisto Definitivo</h2>
+        <h2>Persone: {{ numeroPersone }}</h2>
+      </div>
+      <template v-for="(category, categoryName) in bevande.acquisto" :key="categoryName">
+        <h3 class="mt-3">{{ categoryName }}</h3>
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th>Dettaglio</th>
+              <th>Quantità da acquistare</th>
+              <th>Nostra Quantità</th>
+              <th>Quantità da comprare / Rimanenze</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template v-for="(drink, drinkName) in category" :key="drinkName">
+              <tr>
+                <td>{{ drinkName }}</td>
+                <td>
+                  <p>
+                    <span>{{ drink.quantitaNecessaria.toFixed(2) }} l</span>
+                    <br />
+                    <span v-if="drink.millilitriNecessari !== 0">{{ drink.millilitriNecessari.toFixed(0) }} ml</span>
+                    <br />
+                    <span v-if="drink.centilitriNecessari !== 0">{{ drink.centilitriNecessari.toFixed(0) }} cl</span>
+                    <br />
+                    <span v-if="drink.bottiglieNecessarie !== 0">{{ drink.bottiglieNecessarie.toFixed(2) }} bottiglie</span>
+                  </p>
+                </td> 
+                <td>
+                  <p>
+                    <span>{{ drink.rimanenzaDisponibile.toFixed(2) }} l</span>
+                    <br />
+                    <span>{{ drink.rimanenzaMillilitri.toFixed(0) }} ml</span>
+                    <br />
+                    <span>{{ drink.rimanenzaCentilitri.toFixed(0) }} cl</span>
+                    <br />
+                    <span>{{ drink.rimanenzaBottiglie.toFixed(2) }} bottiglie</span>
+                  </p>
+                </td>
+                <td>
+                  <p v-if="drink.quantitaNecessaria > drink.rimanenzaDisponibile">
+                    <span>{{ (drink.quantitaNecessaria - drink.rimanenzaDisponibile).toFixed(2) }} litri da comprare</span>
+                    <br />
+                    <span>{{ (drink.millilitriNecessari - drink.rimanenzaMillilitri).toFixed(0) }} ml da comprare</span>
+                    <br />
+                    <span>{{ (drink.centilitriNecessari - drink.rimanenzaCentilitri).toFixed(0) }} cl da comprare</span>
+                    <br />
+                    <span>{{ (drink.bottiglieNecessarie - drink.rimanenzaBottiglie).toFixed(2) }} bottiglie da comprare</span>
+                  </p>
+                  <p v-else>
+                    <span class="text-success">{{ drink.rimanenzaDisponibile.toFixed(2) }} litri in eccesso</span>
+                  </p>
+                </td> <!-- Quantità da acquistare / rimanenze -->
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </template>
+      <div class="d-flex justify-content-between">
+        <button class="btn btn-secondary" @click="fase--">Indietro</button>
+        <button class="btn btn-success" @click="downloadPDF">Download PDF</button>
+      </div>
+    </div>
+    
+        <!-- Indicatori di Fase con Pallini -->
+        <div class="row justify-content-center my-5">
+      <div class="col-12">
+        <div class="progress-indicator d-flex justify-content-between align-items-center">
+          <div class="step" :class="{ active: fase >= 1 }">
+            <div class="step-circle d-flex justify-content-center align-items-center">
+              <span class="step-number">1</span>
+            </div>
+            <span class="step-label">Persone</span>
+          </div>
+          <div class="step" :class="{ active: fase >= 2 }">
+            <div class="step-circle d-flex justify-content-center align-items-center">
+              <span class="step-number">2</span>
+            </div>
+            <span class="step-label">Quantità</span>
+          </div>
+          <div class="step" :class="{ active: fase >= 3 }">
+            <div class="step-circle d-flex justify-content-center align-items-center">
+              <span class="step-number">3</span>
+            </div>
+            <span class="step-label">Totale</span>
+          </div>
+          <div class="step" :class="{ active: fase >= 4 }">
+            <div class="step-circle d-flex justify-content-center align-items-center">
+              <span class="step-number">4</span>
+            </div>
+            <span class="step-label">Bilancio</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+</template>
 
 <style scoped>
 .progress-indicator .step {

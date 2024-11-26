@@ -1,12 +1,10 @@
 <script>
-import CalcoloBottiglie from '../components/CalcoloBottiglie.vue'
-import RimanenzeBottgilie from '../components/RimanenzeBottiglie.vue';
+import GestioneQuantità from '../components/GestioneQuantità.vue';
 
 export default {
     name: 'Classifica',
     components: {
-        CalcoloBottiglie,
-        RimanenzeBottgilie
+        GestioneQuantità
     }
 }
 </script>
@@ -24,9 +22,9 @@ export default {
                     <img src="https://www.latobmilano.it/wp-content/uploads/2023/04/formazione-lavoro-2023-lato-b-milano-FB.jpg" alt="Work in Progress" class="img-fluid" style="max-width: 500px;">
                 </div>
             </div>
-            <RimanenzeBottgilie></RimanenzeBottgilie>
+            <GestioneQuantità></GestioneQuantità>
         </div>
-        <!-- <CalcoloBottiglie class="my-5"></CalcoloBottiglie> -->
+
         
     </section>
 </template>
