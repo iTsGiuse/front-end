@@ -1,9 +1,11 @@
 <script>
+import  OcaAlcolico from '../components/Games/OcaAlcolico.vue'
 import GestioneQuantità from '../components/GestioneQuantità.vue';
 
 export default {
     name: 'Classifica',
     components: {
+        OcaAlcolico,
         GestioneQuantità
     }
 }
@@ -22,6 +24,7 @@ export default {
                     <img src="https://www.latobmilano.it/wp-content/uploads/2023/04/formazione-lavoro-2023-lato-b-milano-FB.jpg" alt="Work in Progress" class="img-fluid" style="max-width: 500px;">
                 </div>
             </div>
+            <OcaAlcolico></OcaAlcolico>
             <GestioneQuantità></GestioneQuantità>
         </div>
 

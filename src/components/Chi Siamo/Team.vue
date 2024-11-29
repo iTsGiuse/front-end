@@ -2,203 +2,177 @@
 import admin from '../../../admin.js';
 
 export default {
-    name: 'Team',
-    data() {
-        return {
-            admin
-        };
-    }
+  name: 'Team',
+  data() {
+    return {
+      admin
+    };
+  }
 };
 </script>
 
 <template>
-    <section id="team">
-        <!-- Intestazione -->
-        <div class="header text-center">
-            <h3 class="section-title">Il Nostro Team</h3>
-            <p class="lead">Incontra i membri chiave del nostro team.</p>
+    <section id="team" class="py-5">
+      <div class="container">
+        <div class="row text-center mb-5">
+          <div class="col mb-4">
+            <h2 class="section-title text-danger">Team</h2>
+            <h4 class="lead text-muted">Ogni membro del nostro team è una risorsa inestimabile</h4>
+          </div>
         </div>
-        <!-- Membri -->
-        <div class="content">
-            <div v-if="admin.length === 0">
-                <p>Non ci sono membri nel team.</p>
+  
+        <div v-for="(member, index) in admin" :key="index" class="row mb-5 member-section">
+          <div :class="['col-12 col-md-6 d-flex align-items-center', index % 2 !== 0 ? 'order-md-2' : '']">
+            <div class="team-photo d-flex" :class="index % 2 !== 0 ? 'ms-auto' : 'justify-content-start'">
+              <img :src="member.foto" :alt="`${member.nome} ${member.cognome}`" class="img-fluid rounded-circle shadow-lg" />
             </div>
-            <div 
-                v-for="(adminItem, index) in admin" 
-                :key="adminItem.key" 
-                class="member-section"
-                :class="{'bg-white': index % 2 === 0, 'bg-light text-dark': index % 2 !== 0}">
-                <!-- Ordine alternato: se l'indice è pari, la foto è a sinistra, altrimenti a destra -->
-                <div :class="{'order-1': index % 2 === 0, 'order-2': index % 2 !== 0}" class="team-photo">
-                    <img 
-                        :src="adminItem.foto" 
-                        alt="Foto di {{ adminItem.nome }} {{ adminItem.cognome }}">
-                </div>
-                <div :class="{'order-2': index % 2 === 0, 'order-1': index % 2 !== 0}" class="team-text">
-                    <h4>{{ adminItem.nome }} {{ adminItem.cognome }}</h4>
-                    <p>{{ adminItem.descrizione }}</p>
-                    
-                    <!-- Social icons -->
-                    <div class="social-icons">
-                        <a  
-                           :href="adminItem.instagram" 
-                           target="_blank" 
-                           class="text-primary">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a  
-                           :href="adminItem.linkedin" 
-                           target="_blank" 
-                           class="text-primary">
-                            <i class="fab fa-linkedin"></i>
-                        </a>
-                    </div>
-                </div>
+          </div>
+          <div :class="['col-12 col-md-6 d-flex flex-column', index % 2 !== 0 ? 'text-md-end' : 'text-md-start']">
+            <div class="team-text text-center text-md-start flex-grow-1">
+              <h4 class="text-danger">{{ member.nome }} {{ member.cognome }}</h4>
+              <p class="text-muted">{{ member.descrizione }}</p>
             </div>
+            <div :class="['social-icons mt-2 d-flex ', index % 2 !== 0 ? 'justify-content-start' : 'ms-auto']">
+              <a :href="member.instagram" class="text-dark me-3" target="_blank">
+                <i class="fab fa-instagram"></i> 
+              </a>
+              <a :href="member.linkedin" class="text-dark me-3" target="_blank">
+                <i class="fab fa-linkedin"></i> 
+              </a>
+            </div>
+          </div>
         </div>
+  
+      </div>
     </section>
-    </template>
-    
-    
-    
-    <style scoped lang="scss">
-    /* Variabili */
-    $primary-color: #4CAF50;
-    $light-color: #F0F0F0;
-    $white-color: #FFFFFF;
-    $dark-text: #333;
-    
-    /* Sezione Team */
-    #team {
-        height: 100%; 
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start; 
-        overflow: hidden; 
-    
-        .header {
-            text-align: center;
-            margin-bottom: 1rem;
-    
-            .section-title {
-                font-size: 2rem;
-                font-weight: bold;
-                color: $primary-color;
-                text-transform: uppercase;
-            }
-    
-            .lead {
-                font-size: 1.2rem;
-                color: $dark-text;
-            }
-        }
-    
-        .content {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-around;
-            flex-grow: 1;
-    
-            .member-section {
-                display: flex;
-                align-items: center;
-                padding: 1.5rem;  
-                min-height: calc((100vh - 10vh) / 5); 
-                box-sizing: border-box;
-    
-                &.bg-white {
-                    background-color: $white-color;
-                    color: $dark-text;
-                }
-    
-                &.bg-light {
-                    background-color: $light-color;
-                    color: $dark-text;
-                }
-    
-                .team-photo {
-                    flex: 1;
-                    display: flex;
-                    justify-content: center;
-                    margin-right: 1rem;
-    
-                    img {
-                        max-width: 150px;
-                        height: 150px;
-                        object-fit: cover;
-                        border-radius: 50%;
-                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-                    }
-                }
-    
-                .team-text {
-                    flex: 2;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-    
-                    h4 {
-                        margin-bottom: 0.5rem;
-                        font-weight: bold;
-                        color: $primary-color;
-                    }
-    
-                    p {
-                        margin-bottom: 0;
-                        font-size: 1rem;
-                        color: $dark-text;
-                    }
-    
-                    .social-icons {
-                        a {
-                            margin-right: 0.5rem;
-    
-                            i {
-                                font-size: 1.5rem;
-                                transition: color 0.3s ease;
-                            }
-    
-                            &:hover i {
-                                color: darken($primary-color, 10%);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
-    /* Responsive Design */
-    @media (max-width: 768px) {
-        #team {
-            .content {
-                .member-section {
-                    flex-direction: column;
-                    text-align: center;
-                    height: auto;
-                    padding: 1rem 0;
-    
-                    .team-photo {
-                        margin-bottom: 1rem;
-    
-                        img {
-                            max-width: 120px;
-                            height: 120px;
-                        }
-                    }
-    
-                    .team-text {
-                        h4 {
-                            font-size: 1.5rem;
-                        }
-    
-                        p {
-                            font-size: 0.9rem;
-                        }
-                    }
-                }
-            }
-        }
-    }
-    </style>
-    
+  </template>
+
+<style scoped>
+  
+  #team {
+  background-color: #f9f9f9;
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.lead {
+  font-size: 1.1rem;
+  color: #6c757d;
+  font-weight: 600;
+}
+
+.member-section {
+  background-color: #fff;
+  padding: 5rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.team-photo img {
+  border-radius: 50%;
+  max-width: 250px;
+  height: 250px;
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.team-photo img:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.team-text {
+  margin-top: 1rem;
+}
+
+h4 {
+  color: #941110;
+  font-size: 1.75rem;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+h4:hover {
+  color: #d9534f;
+}
+
+p {
+  color: #6c757d;
+  font-size: 1.2rem;
+  font-weight: 300;
+}
+
+.social-icons {
+  margin-top: 1rem;
+  display: flex;
+}
+
+.social-icons a {
+  color: #941110;
+  font-size: 1.5rem;
+  margin-right: 1rem;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.social-icons a:hover {
+  color: #28a745;
+  transform: scale(1.2);
+}
+
+i {
+  font-size: 2rem;
+}
+
+@media (max-width: 768px) {
+  .member-section {
+    flex-direction: column; 
+    padding: 2rem;
+    text-align: center !important; 
+  }
+
+  .member-section:last-child{
+    margin-bottom: 40px !important;
+  }
+
+  .team-photo {
+    margin-bottom: 1.5rem;
+  }
+
+  .team-photo img {
+    max-width: 150px; 
+    height: 150px;
+    display: flex;
+    justify-content: center !important; 
+
+  }
+
+  .team-text h4 {
+    font-size: 1.4rem;
+  }
+
+  .team-text p {
+    font-size: 1rem; 
+    margin-bottom: 1rem; 
+  }
+
+  .social-icons {
+    justify-content: center !important; 
+    gap: 1rem; 
+  }
+
+  .social-icons a {
+    font-size: 1.5rem; 
+  }
+}
+</style>

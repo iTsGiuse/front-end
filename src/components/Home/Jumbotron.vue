@@ -1,5 +1,5 @@
 <script>
-import NeveHeader from '../assets/images/Header/Neve-Header.jpg';
+import NeveHeader from '../../assets/images/Header/Neve-Header.jpg';
 
 export default {
     name: 'Jumbotron',

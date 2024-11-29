@@ -1,5 +1,5 @@
 <script>
-   import news from '../../news.js';
+   import news from '../../../news.js';
 
 export default {
     name: 'News',

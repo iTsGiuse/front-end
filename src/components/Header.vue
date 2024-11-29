@@ -90,7 +90,7 @@
                         display: block;
                         width: 0;
                         height: 5px;
-                        background: black; 
+                        background: white; 
                         transition: width 0.3s;
                         position: absolute;
                         bottom: -75%; 
@@ -114,18 +114,17 @@
         }
 
         @media (max-width: 991px) {
-            /* Aggiungi stili per tablet e smartphone */
             .navbar-collapse {
                 text-align: center;
             }
 
             ul {
-                flex-direction: column; /* La lista dei link diventa verticale */
+                flex-direction: column; 
                 align-items: center;
             }
 
             li {
-                margin: 10px 0; /* Distanza tra gli elementi */
+                margin: 10px 0; 
 
                 .nav-link {
                     text-decoration: none;

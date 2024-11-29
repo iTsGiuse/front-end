@@ -12,52 +12,41 @@ export default {
 </script>
 
 <template>
-<section id="hero">
-    <div class="hero-section text-center text-light d-flex align-items-center">
-        <img :src="ImageHero" alt="Hero Chi Siamo" class="hero-image">
+    <section id="hero" class="hero-section text-center text-light d-flex align-items-center">
         <div class="container">
             <h1 class="display-4">Chi Siamo</h1>
             <p class="lead">Il nostro viaggio e la nostra missione.</p>
         </div>
-    </div>
-</section>
+    </section>
 </template>
-
-<style lang="scss" scoped>
-#hero {
-    .hero-section {
-        position: relative;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        overflow: hidden;
-        text-align: center;
-    }
     
-    .hero-image {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        z-index: -100;
+
+<style scoped lang="scss">
+#hero {
+    background-color: #941110; 
+    height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    
+    .container {
+        color: #F9F9F9; 
+        z-index: 1;
     }
 
     h1 {
         font-size: 4rem;
         font-weight: bold;
-        z-index: 100;
+        margin-bottom: 1rem;
     }
 
     .lead {
         font-size: 1.25rem;
-        color: #ccc;
-        z-index: 100;
+        color: #F9F9F9; 
     }
 
-    /* Media Queries per Responsività */
+    
     @media (max-width: 768px) {
         h1 {
             font-size: 2.5rem;

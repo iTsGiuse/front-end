@@ -3,8 +3,6 @@ import Hero from '../components/Chi Siamo/Hero.vue';
 import Mission from '../components/Chi Siamo/Mission.vue';
 import Team from '../components/Chi Siamo/Team.vue';
 
-
-
 export default {
   name: 'ChiSiamo',
   components: {
