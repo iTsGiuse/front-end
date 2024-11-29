@@ -1,6 +1,6 @@
-import fakenews from './src/assets/images/News/fakenews.jpg';
-import privacy from './src/assets/images/News/privacy.jpg';
-import security from './src/assets/images/News/security.jpg';
+import fakenews from '../images/News/fakenews.jpg';
+import privacy from '../images/News/privacy.jpg';
+import security from '../images/News/security.jpg';
 
 const news = [
     {

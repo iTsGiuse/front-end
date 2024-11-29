@@ -1,5 +1,5 @@
 <script>
-import events from '../../events';
+import events from '../assets/Js/events';
 
 export default {
   name: 'EventoDettaglio',

@@ -1,5 +1,5 @@
 <script>
-import faqs from "../../faqs.js";
+import faqs from "../assets/Js/faqs.js";
 
 export default {
   name: 'Faq',

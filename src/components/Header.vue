@@ -1,3 +1,12 @@
+<script>
+
+export default{
+    name: 'Header'
+}
+
+</script>
+
+
 <template>
     <header>
         <nav class="navbar navbar-expand-lg">

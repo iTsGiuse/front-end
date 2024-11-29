@@ -1,7 +1,7 @@
-import locandinaHalloween from './src/assets/images/Locandine/Locandina-Halloween.jpg';
-import locandinaCapodanno from './src/assets/images/Locandine/Locandina-Capodanno.jpg';
-import locandinaCarnevale from './src/assets/images/Locandine/Locandina-Carnevale.jpg';
-import locandinaNatale from './src/assets/images/Locandine/Locandina-Natale.jpg';
+import locandinaHalloween from '../images/Locandine/Locandina-Halloween.jpg';
+import locandinaCapodanno from '../images/Locandine/Locandina-Capodanno.jpg';
+import locandinaCarnevale from '../images/Locandine/Locandina-Carnevale.jpg';
+import locandinaNatale from '../images/Locandine/Locandina-Natale.jpg';
 
 const events = [
     {

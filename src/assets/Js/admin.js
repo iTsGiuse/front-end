@@ -1,4 +1,4 @@
-import Giuse from './src/assets/images/Team/Giuse.jpeg';
+import Giuse from '../images/Team/Giuse.jpeg';
 /* import Asia from './src/assets/images/Team/Asia.jpg';
 import Claudia from './src/assets/images/Team/Claudia.jpg';
 import Marci from './src/assets/images/Team/Marci.jpg'; */

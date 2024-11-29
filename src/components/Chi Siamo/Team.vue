@@ -1,5 +1,5 @@
 <script>
-import admin from '../../../admin.js';
+import admin from '../../assets/Js/admin.js';
 
 export default {
   name: 'Team',
