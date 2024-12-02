@@ -145,6 +145,11 @@ i {
     margin-bottom: 40px !important;
   }
 
+  .member-section .team-photo, .social-icons{
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
   .team-photo {
     margin-bottom: 1.5rem;
   }
@@ -154,7 +159,6 @@ i {
     height: 150px;
     display: flex;
     justify-content: center !important; 
-
   }
 
   .team-text h4 {
@@ -165,6 +169,14 @@ i {
     font-size: 1rem; 
     margin-bottom: 1rem; 
   }
+    
+  #mission .highlight{
+    font-size: 1rem;
+  }
+
+  #mission .lead-highlight{
+    margin-top: 500rem;
+  }
 
   .social-icons {
     justify-content: center !important; 
@@ -174,5 +186,6 @@ i {
   .social-icons a {
     font-size: 1.5rem; 
   }
+
 }
 </style>

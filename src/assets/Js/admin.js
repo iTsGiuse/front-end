@@ -19,7 +19,7 @@ const admin = [
     descrizione: "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Odit ea amet nihil quia maiores architecto perspiciatis? Optio consequuntur vel voluptate quisquam temporibus labore, possimus velit, nesciunt necessitatibus iusto vero id. Lorem ipsum...",
     foto: Giuse,
     key: 2,
-    instagram: "https://www.instagram.com/claudia_zito/",
+    instagram: "https://www.instagram.com/dudu_ina/",
     linkedin: "https://www.linkedin.com/in/giuseppe-amato-37553a314"
   },
   {
@@ -28,7 +28,7 @@ const admin = [
     descrizione: "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Odit ea amet nihil quia maiores architecto perspiciatis? Optio consequuntur vel voluptate quisquam temporibus labore, possimus velit, nesciunt necessitatibus iusto vero id. Lorem ipsum...",
     foto: Giuse,
     key: 3,
-    instagram: "https://www.instagram.com/marci_calabrese/",
+    instagram: "https://www.instagram.com/calabresemarcello/",
     linkedin: "https://www.linkedin.com/in/giuseppe-amato-37553a314"
   },
   {

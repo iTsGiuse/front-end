@@ -1,12 +1,14 @@
 <script>
 import  OcaAlcolico from '../components/Games/OcaAlcolico.vue'
 import GestioneQuantità from '../components/GestioneQuantità.vue';
+import Sconti from '../components/Sconti.vue';
 
 export default {
     name: 'Classifica',
     components: {
         OcaAlcolico,
-        GestioneQuantità
+        GestioneQuantità,
+        Sconti
     }
 }
 </script>
@@ -26,6 +28,7 @@ export default {
             </div>
             <OcaAlcolico></OcaAlcolico>
             <GestioneQuantità></GestioneQuantità>
+            <Sconti></Sconti>
         </div>
 
         
