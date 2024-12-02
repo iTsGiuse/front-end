@@ -26,9 +26,9 @@ export default{
                             <li class="nav-item">
                                 <router-link class="nav-link" active-class="active" to="/eventi">Eventi</router-link>
                             </li>
-                            <li class="nav-item">
+                            <!-- <li class="nav-item">
                                 <router-link class="nav-link" active-class="active" to="/classifica">Classifica</router-link>
-                            </li>
+                            </li> -->
                             <li class="nav-item">
                                 <router-link class="nav-link" active-class="active" to="/chi-siamo">Chi Siamo</router-link>
                             </li>
