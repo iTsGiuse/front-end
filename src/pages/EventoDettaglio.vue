@@ -138,6 +138,20 @@ export default {
             </span>
           </div>
 
+          <!-- FEEDBACK -->
+          <div class="feedback-section my-3" v-if="eventoItem.feedback && eventoItem.feedback.length > 0">
+            <h5 class="mb-3">Feedback del Partecipante:</h5>
+            <button class="btn btn-outline-danger">
+              <a 
+                :href="eventoItem.feedback" 
+                target="_blank" 
+                class="text-danger text-decoration-none"
+              >
+                Vai alla Recensione
+              </a>
+            </button>
+          </div>
+
 
         </div>
       </div>

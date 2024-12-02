@@ -1,7 +1,7 @@
 import locandinaHalloween from '../images/Locandine/Locandina-Halloween.jpg';
 import locandinaCapodanno from '../images/Locandine/Locandina-Capodanno.jpg';
 import locandinaCarnevale from '../images/Locandine/Locandina-Carnevale.jpg';
-import locandinaNatale from '../images/Locandine/Locandina-Natale.jpg';
+import locandinaNatale from '../images/Locandine/Locandina-Natale.png';
 
 const events = [
     {
@@ -19,6 +19,7 @@ const events = [
         services: ['guardaroba', 'dj', 'karaoke', 'fotografo', 'panettone e pandoro', 'brindisi'],
         location: 'Club DRACARYS',
         tags: ["capodanno", "party", "feste 2024", "club", "evento speciale"],
+        feedback: ""
     },
     {
         title: "Festa di Carnevale",
@@ -34,7 +35,8 @@ const events = [
         dressCode:'maschera',
         services: ['dj', 'giochi', 'guardaroba', 'premiazioni costumi'],
         location: 'Casa Claudia Zito',
-        tags: ["carnevale", "party", "maschere", "feste febbraio", "club"]
+        tags: ["carnevale", "party", "maschere", "feste febbraio", "club"],
+        feedback: ""
     },
     {
         title: "Halloween Party",
@@ -50,7 +52,8 @@ const events = [
         dressCode:'costume',
         services: ['giochi', 'drink a tema', 'premi costumi'],
         location: 'Club Spooky',
-        tags: ["halloween", "party", "feste ottobre", "costumi", "club"]
+        tags: ["halloween", "party", "feste ottobre", "costumi", "club"],
+        feedback: 'https://docs.google.com/forms/d/e/1FAIpQLSedzpiw4PnzqDxFhtVHNbwpwfbbDgALCg8UD11KpmbsNoh3Jg/viewform'
     },
     {
         title: "Christmas Party",
@@ -70,7 +73,8 @@ const events = [
         fotografo: '',
         pulizia: 'noi',
         location: '',
-        tags: ["Christmas", "party", "feste dicembre", "costumi", "dj"]
+        tags: ["Christmas", "party", "feste dicembre", "costumi", "dj"],
+        feedback: 'https://docs.google.com/forms/d/e/1FAIpQLScyjzJzS1CpZQanpeO49kmmzgT0vX2wHiqa9NGjajdAYa1JfA/viewform'
     },
 
 ];

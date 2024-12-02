@@ -19,8 +19,8 @@
       </div>
 
       <!-- Descrizione delle Opzioni -->
-      <div v-if="!selectedOption" class="text-center mt-5">
-        <h3 class="section-title">Come possiamo aiutarti?</h3>
+      <div v-if="!selectedOption" class="text-center my-5">
+        <h3 class="section-title text-danger my-4">Come possiamo aiutarti?</h3>
         <p class="section-desc">Scegli un'opzione dal menu a tendina sopra per vedere il modulo di contatto appropriato.</p>
         <p class="section-desc">Selezionando "Informazioni Generali", potrai inviare domande generali riguardanti i nostri servizi, orari di apertura, e altre informazioni.</p>
         <p class="section-desc">Se hai bisogno di "Supporto Tecnico", seleziona questa opzione e compila il modulo con i dettagli del problema tecnico.</p>
@@ -146,7 +146,6 @@ export default {
   },
   methods: {
     updateForm() {
-      // Logica aggiuntiva per aggiornare il form, se necessario
     }
   }
 };

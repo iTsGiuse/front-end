@@ -8,9 +8,8 @@
       <img :src="LogoSpotify" alt="Logo Spotify" class="logo" />
     </button>
     <iframe
-      v-if="isOpen"
+      v-show="isOpen" 
       :src="playlistUrl"
-
       frameborder="0"
       allowtransparency="true"
       allow="encrypted-media"
@@ -27,7 +26,7 @@ export default {
   data() {
     return {
       playlistUrl:
-        "https://open.spotify.com/embed/playlist/3klgHkDgLPrZ7E3dDR2GVN?si=3b77095acae141f5&autoplay=true",
+        "https://open.spotify.com/embed/playlist/0wKYc24Ox6KbWRpO9zBpPh?si=71f7fbafafb349b5",
       isOpen: true,
       LogoSpotify,
     };
@@ -87,7 +86,6 @@ export default {
   width: 90vw;
   max-width: 300px;
   height: 380px;
-
 }
 
 .spotify-player .toggle-button {
